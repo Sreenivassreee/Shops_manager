@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:shops_manager/Screens/home_page.dart';
-import 'package:shops_manager/widgets/button.dart';
+import 'package:shops_manager/Screens/home_screen.dart';
+import 'package:shops_manager/widgets/btn.dart';
 import 'package:shops_manager/widgets/title_text.dart';
 
 class LoginPage extends StatelessWidget {

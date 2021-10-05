@@ -11,9 +11,10 @@ class btn extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
+      height: 50,
       width: double.infinity,
       child: Padding(
-        padding: const EdgeInsets.all(8.0),
+        padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 8),
         child: CupertinoButton(
           child: Text(btnTitle ?? " "),
           color: CupertinoColors.black,

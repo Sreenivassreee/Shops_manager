@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:shops_manager/Screens/product_details.dart';
 import 'package:shops_manager/widgets/title_text.dart';
 
-class ProductPage extends StatelessWidget {
-  const ProductPage({Key? key}) : super(key: key);
+class ProductScreen extends StatelessWidget {
+  const ProductScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -64,13 +64,15 @@ class ProductPage extends StatelessWidget {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
                                 children: [
                                   Text(
                                     "Stock",
                                     style: TextStyle(color: Colors.green),
                                   ),
                                   Padding(
-                                    padding: const EdgeInsets.only(left: 20),
+                                    padding: const EdgeInsets.only(right: 10),
                                     child: CircleAvatar(
                                       radius: 20,
                                       backgroundColor: Colors.black,

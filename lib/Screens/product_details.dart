@@ -1,7 +1,4 @@
-import 'package:flutter/material.dart';
-import 'package:shops_manager/widgets/button.dart';
-import 'package:shops_manager/widgets/t_button.dart';
-import 'package:shops_manager/widgets/title_text.dart';
+import '../export.dart';
 
 class ProductDetails extends StatelessWidget {
   const ProductDetails({Key? key}) : super(key: key);
@@ -15,7 +12,14 @@ class ProductDetails extends StatelessWidget {
           children: [
             btn(
               btnTitle: "SELE",
-              action: () {},
+              action: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (BuildContext context) => SalePage(),
+                  ),
+                );
+              },
             ),
             tBtn(
               btnTitle: "SEND TO ANOTHER STORE",

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:shops_manager/Screens/product_page.dart';
-import 'package:shops_manager/widgets/button.dart';
+import 'package:shops_manager/Screens/product_screen.dart';
+import 'package:shops_manager/widgets/btn.dart';
 import 'package:shops_manager/widgets/t_button.dart';
 import 'package:shops_manager/widgets/title_text.dart';
 
@@ -57,7 +57,8 @@ class _HomepageState extends State<Homepage> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (BuildContext context) => ProductPage(),
+                              builder: (BuildContext context) =>
+                                  ProductScreen(),
                             ),
                           );
                         },
