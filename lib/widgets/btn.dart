@@ -16,7 +16,10 @@ class btn extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 8),
         child: CupertinoButton(
-          child: Text(btnTitle ?? " "),
+          child: Text(
+            btnTitle ?? " ",
+            style: TextStyle(color: Colors.white),
+          ),
           color: CupertinoColors.black,
           onPressed: action,
         ),

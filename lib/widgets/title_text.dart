@@ -8,6 +8,7 @@ class TitleText extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
+      alignment: Alignment.topLeft,
       height: 60,
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
