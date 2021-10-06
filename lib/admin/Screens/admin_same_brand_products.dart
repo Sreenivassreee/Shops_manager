@@ -1,15 +1,25 @@
-import 'package:flutter/material.dart';
-
-import 'package:shops_manager/widgets/title_text.dart';
+import 'package:shops_manager/admin/Screens/admin_add_products.dart';
+import 'package:shops_manager/admin/Screens/admin_edit_products.dart';
 import 'package:shops_manager/export.dart';
 
-class ProductScreen extends StatelessWidget {
-  const ProductScreen({Key? key}) : super(key: key);
+class AdminSameBrandProducts extends StatelessWidget {
+  const AdminSameBrandProducts({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: app_bar(title: 'Stock'),
+      appBar: app_bar(title: '{Brand Name}'),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (BuildContext context) => AdminAddProducts(),
+            ),
+          );
+        },
+        child: Icon(Icons.add),
+      ),
       body: Container(
         height: MediaQuery.of(context).size.height - 90,
         // child: GridView.count(
@@ -40,7 +50,7 @@ class ProductScreen extends StatelessWidget {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (BuildContext context) => ProductDetails(),
+                    builder: (BuildContext context) => AdminEditProducts(),
                   ),
                 );
               },

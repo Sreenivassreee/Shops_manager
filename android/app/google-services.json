@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "1001104683075",
+    "project_id": "shop-manger",
+    "storage_bucket": "shop-manger.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1001104683075:android:fdf76e9311acdd2a6724f6",
+        "android_client_info": {
+          "package_name": "com.example.shops_manager"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1001104683075-q8iup1kd9gdbkapc4nog0kk36h0v2vfa.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBo0Y0PtKGkwab5SLHBDINI5MnV4FtMdMc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1001104683075-q8iup1kd9gdbkapc4nog0kk36h0v2vfa.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

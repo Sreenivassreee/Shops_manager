@@ -1,11 +1,3 @@
-export 'Screens/flash_screen.dart';
-export 'Screens/home_screen.dart';
-export 'Screens/login_screen.dart';
-export 'Screens/product_details.dart';
-export 'Screens/product_screen.dart';
-export 'Screens/payment_screen.dart';
-export 'Screens/sale_screen.dart';
-export 'Screens/final_alert.dart';
 export 'widgets/btn.dart';
 export 'widgets/t_button.dart';
 export 'widgets/title_text.dart';
@@ -26,3 +18,7 @@ export 'package:shops_manager/global/widgets/appbar.dart';
 export 'package:shops_manager/shop/Screens/send_to_another_quantity.dart';
 
 export 'package:shops_manager/shop/Screens/accept_exchange.dart';
+
+// Admin
+export 'package:shops_manager/admin/Screens/admin_home_screen.dart';
+export 'package:shops_manager/admin/Screens/admin_brand_product_screen.dart';
