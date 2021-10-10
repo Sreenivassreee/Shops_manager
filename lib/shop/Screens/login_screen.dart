@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:shops_manager/admin/Screens/admin_home_screen.dart';
+import 'package:shops_manager/admin/firebase/fire.dart';
 
 import 'package:shops_manager/widgets/btn.dart';
 import 'package:shops_manager/widgets/title_text.dart';
@@ -16,36 +17,11 @@ class _LoginPageState extends State<LoginPage> {
   TextEditingController userNameController = TextEditingController();
   TextEditingController shopNameController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
+  Fire fire = Fire();
   var error = '';
   @override
   void initState() {
     super.initState();
-  }
-
-  Future<String> get({shopName, userName, password}) async {
-    var typeOfUser;
-    CollectionReference users =
-        await FirebaseFirestore.instance.collection('users');
-    await users.doc(shopName).get().then((v) {
-      if (v['user_name'] == userName && v['password'] == password) {
-        if (v['is_admin']) {
-          typeOfUser = "admin";
-          print(typeOfUser);
-        } else {
-          typeOfUser = "manager";
-          print(typeOfUser);
-        }
-        setState(() {
-          error = '';
-        });
-      } else {
-        setState(() {
-          error = "Your Cretentials are Wrong";
-        });
-      }
-    });
-
-    return await typeOfUser;
   }
 
   @override
@@ -95,18 +71,18 @@ class _LoginPageState extends State<LoginPage> {
               },
               child: Text('Forgot Password'),
             ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Text(
-                error,
-                textAlign: TextAlign.center,
-                style:
-                    TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
-              ),
+            Text(
+              error,
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                  color: Colors.red, fontWeight: FontWeight.bold, fontSize: 20),
             ),
             btn(
                 btnTitle: "Login",
                 action: () async {
+                  setState(() {
+                    error = '';
+                  });
                   // Direct Login
                   Navigator.push(
                     context,
@@ -114,47 +90,51 @@ class _LoginPageState extends State<LoginPage> {
                       builder: (BuildContext context) => AdminHomepage(),
                     ),
                   );
-                  // if (shopNameController.text.isEmpty ||
-                  //     userNameController.text.isEmpty ||
-                  //     passwordController.text.isEmpty) {
-                  //   setState(() {
-                  //     error = "Please provide valid Cretentials";
-                  //   });
-                  // } else {
-
-                  //   await get(
-                  //           shopName: shopNameController.text,
-                  //           userName: userNameController.text,
-                  //           password: passwordController.text)
-                  //       .then((v) {
-                  //     print("v");
-                  //     print(v);
-                  //     if (v != null) {
-                  //       print(v);
-                  //       if (v == 'admin') {
-                  //         Navigator.push(
-                  //           context,
-                  //           MaterialPageRoute(
-                  //             builder: (BuildContext context) =>
-                  //                 AdminHomepage(),
-                  //           ),
-                  //         );
-                  //       } else if (v == 'manager') {
-                  //         Navigator.push(
-                  //           context,
-                  //           MaterialPageRoute(
-                  //             builder: (BuildContext context) => Homepage(),
-                  //           ),
-                  //         );
+                  //   if (shopNameController.text.isEmpty ||
+                  //       userNameController.text.isEmpty ||
+                  //       passwordController.text.isEmpty) {
+                  //     setState(() {
+                  //       error = "Please provide valid Cretentials";
+                  //     });
+                  //   } else {
+                  //     fire.ValidateLogin(
+                  //             shopName: shopNameController.text,
+                  //             userName: userNameController.text,
+                  //             password: passwordController.text)
+                  //         .then((v) {
+                  //       if (v != Null) {
+                  //         if (v == 'admin') {
+                  //           Navigator.pushAndRemoveUntil(
+                  //               context,
+                  //               MaterialPageRoute(
+                  //                   builder: (BuildContext context) =>
+                  //                       AdminHomepage()),
+                  //               ModalRoute.withName(''));
+                  //         } else if (v == 'manager') {
+                  //           Navigator.pushAndRemoveUntil(
+                  //               context,
+                  //               MaterialPageRoute(
+                  //                   builder: (BuildContext context) =>
+                  //                       Homepage()),
+                  //               ModalRoute.withName(''));
+                  //         } else if (v == "notFound") {
+                  //           setState(() {
+                  //             error = "Invalid cretentials";
+                  //           });
+                  //         } else if (v == "blocked") {
+                  //           setState(() {
+                  //             error = "Blocked by Admin";
+                  //           });
+                  //         }
+                  //       } else {
+                  //         setState(() {
+                  //           error = 'Invalid Error';
+                  //         });
                   //       }
-                  //     } else {
-                  //       setState(() {
-                  //         error = 'Invalid Error';
-                  //       });
-                  //     }
-                  //   });
-                  // }
+                  //     });
+                  //   }
                 }),
+
             // Container(
             //   child: Row(
             //     children: <Widget>[

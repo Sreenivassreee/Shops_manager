@@ -20,34 +20,16 @@ class _AdminBrandProductScreenState extends State<AdminBrandProductScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: app_bar(title: 'Stock'),
-      bottomSheet: Container(
-        height: 100,
-        child: Column(
-          children: [
-            btn(
-              btnTitle: "SELES",
-              action: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (BuildContext context) => AdminSalesReport(),
-                  ),
-                );
-              },
+      bottomSheet: btn(
+        btnTitle: "SELES",
+        action: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (BuildContext context) => AdminSalesReport(),
             ),
-            tBtn(
-              btnTitle: "CHANGE PASSWORD",
-              action: () {
-                // Navigator.push(
-                //   context,
-                //   MaterialPageRoute(
-                //     builder: (BuildContext context) => SendToAnotherShop(),
-                //   ),
-                // );
-              },
-            )
-          ],
-        ),
+          );
+        },
       ),
       body: Container(
         height: MediaQuery.of(context).size.height - 210,
