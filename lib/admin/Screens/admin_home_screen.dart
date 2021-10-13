@@ -57,23 +57,39 @@ class _AdminHomepageState extends State<AdminHomepage> {
             children: snapshot.data!.docs.map((DocumentSnapshot document) {
               Map<String, dynamic> data =
                   document.data()! as Map<String, dynamic>;
-              print(data);
-              var shopName = data["shop_name"];
+
+              var products;
               var productCount = "0";
+              var managerName = data['user_name'];
+              var shopName = data["shop_name"];
 
               if (data["products"]?.length != null) {
                 var len = data["products"]?.length;
+                products = data["products"];
                 productCount = len.toString();
               }
 
-              var managerName = data['user_name'];
+              var tempData = {
+                "shopName": shopName,
+                "products": products,
+                "manager": managerName
+              };
+
+              // print("products");
+
               return InkWell(
                 onTap: () {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
                       builder: (BuildContext context) =>
-                          AdminBrandProductScreen(),
+                          AdminStockProductScreen(
+                        data: tempData = {
+                          "shopName": shopName,
+                          "products": products,
+                          "manager": managerName
+                        },
+                      ),
                     ),
                   );
                 },
@@ -88,7 +104,6 @@ class _AdminHomepageState extends State<AdminHomepage> {
                         children: [
                           Text(
                             shopName ?? " ",
-                            // data['products'][0]['product_ram'] ??
                             style: TextStyle(fontSize: 25, color: Colors.green),
                           ),
                           SizedBox(

@@ -21,8 +21,10 @@ export 'package:shops_manager/shop/Screens/accept_exchange.dart';
 
 // Admin
 export 'package:shops_manager/admin/Screens/admin_home_screen.dart';
-export 'package:shops_manager/admin/Screens/admin_brand_product_screen.dart';
+export 'package:shops_manager/admin/Screens/admin_stock_product_screen.dart';
 
 export 'package:cloud_firestore/cloud_firestore.dart';
 export 'package:shops_manager/admin/Screens/admin_add_shop.dart';
 export 'package:shops_manager/admin/firebase/fire.dart';
+
+export 'package:shops_manager/admin/Screens/admin_add_products.dart';

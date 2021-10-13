@@ -41,7 +41,7 @@ class AdminAddProducts extends StatelessWidget {
           Container(
             padding: EdgeInsets.fromLTRB(10, 10, 10, 0),
             child: TextField(
-              obscureText: true,
+              keyboardType: TextInputType.number,
               decoration: InputDecoration(
                 border: OutlineInputBorder(),
                 labelText: 'ram',
@@ -51,6 +51,7 @@ class AdminAddProducts extends StatelessWidget {
           Container(
             padding: EdgeInsets.fromLTRB(10, 10, 10, 0),
             child: TextField(
+              keyboardType: TextInputType.number,
               decoration: InputDecoration(
                 border: OutlineInputBorder(),
                 labelText: 'Storage',
@@ -60,7 +61,7 @@ class AdminAddProducts extends StatelessWidget {
           Container(
             padding: EdgeInsets.fromLTRB(10, 10, 10, 0),
             child: TextField(
-              obscureText: true,
+              keyboardType: TextInputType.number,
               decoration: InputDecoration(
                 border: OutlineInputBorder(),
                 labelText: 'Price',
@@ -70,6 +71,7 @@ class AdminAddProducts extends StatelessWidget {
           Container(
             padding: EdgeInsets.fromLTRB(10, 10, 10, 0),
             child: TextField(
+              keyboardType: TextInputType.number,
               decoration: InputDecoration(
                 border: OutlineInputBorder(),
                 labelText: 'Quantity',
