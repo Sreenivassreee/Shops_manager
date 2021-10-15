@@ -18,6 +18,7 @@ class AdminStockProductScreen extends StatefulWidget {
 class _AdminStockProductScreenState extends State<AdminStockProductScreen> {
   var dataLength = 0;
   var shopsData;
+  var shopName = '';
   var brands = [];
   var eachBrandData = [];
 
@@ -26,7 +27,7 @@ class _AdminStockProductScreenState extends State<AdminStockProductScreen> {
     super.initState();
     shopsData = widget.data['products'];
 
-    // print(shopsData);
+    shopName = widget.data['shopName'];
 
     filter();
   }
@@ -56,7 +57,8 @@ class _AdminStockProductScreenState extends State<AdminStockProductScreen> {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (BuildContext context) => AdminAddProducts(),
+              builder: (BuildContext context) =>
+                  AdminAddProducts(shopName: shopName),
             ),
           );
         },
@@ -84,14 +86,14 @@ class _AdminStockProductScreenState extends State<AdminStockProductScreen> {
             return brands.length > index
                 ? InkWell(
                     onTap: () {
-                      print(shopsData);
-                      print(brands[index]);
                       Navigator.push(
                         context,
                         MaterialPageRoute(
                           builder: (BuildContext context) =>
                               AdminSameBrandProducts(
-                                  brandsData: shopsData, brand: brands[index]),
+                                  shopName: shopName,
+                                  brandsData: shopsData,
+                                  brand: brands[index]),
                         ),
                       );
                     },

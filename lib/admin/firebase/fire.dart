@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:shops_manager/export.dart';
 
 class Fire {
@@ -82,6 +84,61 @@ class Fire {
       return status;
     }
   }
+
+  Future<String> AddProductToShop(
+      {shopName, brand, phoneModel, ram, storage, price, quantity}) async {
+    var status = '';
+    try {
+      if (shopName == null) {
+        status = "NoShop";
+      } else {
+        await shops.doc(shopName).set({
+          "products": FieldValue.arrayUnion([
+            {
+              "product_brand": brand.toString().toLowerCase().trim(),
+              "product_model": phoneModel.toString().trim(),
+              "product_price": price.toString().trim(),
+              "product_ram": ram.toString().trim(),
+              "product_storage": storage.toString().trim(),
+              "product_quantity": quantity.toString().trim(),
+              "_last_updated": DateTime.now()
+            }
+          ])
+        }, SetOptions(merge: true)).then((value) => {status = "Done"});
+      }
+      return status;
+    } catch (e) {
+      print(e);
+      status = "Error";
+      return status;
+    }
+  }
+
+  Future<String> EditProductToShop(
+      {shopName, brand, phoneModel, ram, storage, price, quantity}) async {
+    var status = '';
+    try {
+      if (shopName == null) {
+        status = "NoShop";
+      } else {
+        await shops.doc(shopName).update({
+          "product_brand": brand.toString().toLowerCase().trim(),
+          "product_model": phoneModel.toString().trim(),
+          "product_price": price.toString().trim(),
+          "product_ram": ram.toString().trim(),
+          "product_storage": storage.toString().trim(),
+          "product_quantity": quantity.toString().trim(),
+          "_last_updated": DateTime.now()
+        }).then((value) => {status = "Done"});
+      }
+      return status;
+    } catch (e) {
+      print(e);
+      status = "Error";
+      return status;
+    }
+  }
+
 //Admin Add Shoop method
 // Future<bool>AddShop(){
 //   return true;

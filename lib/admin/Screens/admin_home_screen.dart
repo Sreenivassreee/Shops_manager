@@ -113,8 +113,8 @@ class _AdminHomepageState extends State<AdminHomepage> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text(
-                                managerName != ""
-                                    ? "Shop Manager :   " + managerName
+                                managerName != null
+                                    ? "Shop Manager :   " + managerName!
                                     : "",
                                 style: TextStyle(
                                   fontSize: 15,

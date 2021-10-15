@@ -3,9 +3,10 @@ import 'package:shops_manager/admin/Screens/admin_edit_products.dart';
 import 'package:shops_manager/export.dart';
 
 class AdminSameBrandProducts extends StatefulWidget {
+  var shopName;
   var brand;
   var brandsData;
-  AdminSameBrandProducts({Key? key, this.brand, this.brandsData})
+  AdminSameBrandProducts({Key? key, this.brand, this.brandsData, this.shopName})
       : super(key: key);
 
   @override
@@ -46,22 +47,6 @@ class _AdminSameBrandProductsState extends State<AdminSameBrandProducts> {
       appBar: app_bar(title: widget.brand.toUpperCase()),
       body: Container(
         height: MediaQuery.of(context).size.height - 90,
-        // child: GridView.count(
-        //   crossAxisCount: 2,
-        //   childAspectRatio: (1 / .4),
-        //   shrinkWrap: true,
-        //   children: List.generate(6, (index) {
-        //     return Padding(
-        //       padding: const EdgeInsets.all(10.0),
-        //       child: Container(
-        //         color: Colors.grey[600],
-        //         child: Row(
-        //           children: [],
-        //         ),
-        //       ),
-        //     );
-        //   }),
-        // ),
         child: GridView.builder(
           itemCount: eachBrandProducts.length,
           gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
@@ -76,13 +61,15 @@ class _AdminSameBrandProductsState extends State<AdminSameBrandProducts> {
             var productPrice =
                 eachBrandProducts[index]['product_price'] ?? "None";
             var productQuantity =
-                eachBrandProducts[index]['products_quantity'] ?? "0";
+                eachBrandProducts[index]['product_quantity'] ?? "0";
             return InkWell(
               onTap: () {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (BuildContext context) => AdminEditProducts(),
+                    builder: (BuildContext context) => AdminEditProducts(
+                        shopName: widget.shopName,
+                        eachProduct: eachBrandProducts[index]),
                   ),
                 );
               },
