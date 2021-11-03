@@ -92,19 +92,66 @@ class Fire {
       if (shopName == null) {
         status = "NoShop";
       } else {
-        await shops.doc(shopName).set({
-          "products": FieldValue.arrayUnion([
+        var tempPrice = price.toString().toLowerCase().trim();
+        var tempQantity = quantity.toString().toLowerCase().trim();
+        var tempBrand = brand.toString().toLowerCase().trim();
+        var tempPhoneModel = phoneModel.toLowerCase().toString().trim();
+        var tempRam = ram.toString().toLowerCase().trim();
+        var tempStorage = storage.toString().toLowerCase().trim();
+        await shops
+            .doc(shopName)
+            .collection("products")
+            .doc(tempBrand.replaceAll(' ', '') +
+                tempPhoneModel.replaceAll(' ', '') +
+                tempRam.replaceAll(' ', '') +
+                tempStorage.replaceAll(' ', ''))
+            .set({
+          "product_brand": tempBrand,
+          "product_model": tempPhoneModel,
+          "product_price": tempPrice,
+          "product_storage": tempStorage,
+          "product_quantity": tempQantity,
+          "_last_updated": DateTime.now()
+        }).then((value) => {status = "Done"});
+      }
+      return status;
+    } catch (e) {
+      print(e);
+      status = "Error";
+      return status;
+    }
+  }
+
+  Future<String> UpdateProductToShop(
+      {shopName, brand, phoneModel, ram, storage, price, quantity}) async {
+    var status = '';
+    try {
+      if (shopName == null) {
+        status = "NoShop";
+      } else {
+        var tempBrand = brand.toString().toLowerCase().trim();
+        var tempPhoneModel = phoneModel.toLowerCase().toString().trim();
+        var tempRam = ram.toString().toLowerCase().trim();
+        var tempStorage = storage.toString().toLowerCase().trim();
+
+        await shops
+            .doc(shopName)
+            .collection("products")
+            .doc(tempBrand.replaceAll(' ', '') +
+                tempPhoneModel.replaceAll(' ', '') +
+                tempRam.replaceAll(' ', '') +
+                tempStorage.replaceAll(' ', ''))
+            .update({
+          "product_price": price.toString().trim(),
+          "product_quantity": quantity.toString().trim(),
+          "_last_updated": FieldValue.arrayUnion([
             {
-              "product_brand": brand.toString().toLowerCase().trim(),
-              "product_model": phoneModel.toString().trim(),
-              "product_price": price.toString().trim(),
-              "product_ram": ram.toString().trim(),
-              "product_storage": storage.toString().trim(),
-              "product_quantity": quantity.toString().trim(),
-              "_last_updated": DateTime.now()
+              'updatedBy': "NeedToAdd",
+              'changes': "NeedToAdd",
+              'timestamp': DateTime.now().toString(),
             }
           ])
-        }, SetOptions(merge: true)).then((value) => {status = "Done"});
+        }).then((value) => {status = "Done"});
       }
       return status;
     } catch (e) {
@@ -129,7 +176,7 @@ class Fire {
           "product_storage": storage.toString().trim(),
           "product_quantity": quantity.toString().trim(),
           "_last_updated": DateTime.now()
-        }).then((value) => {status = "Done"});
+        });
       }
       return status;
     } catch (e) {
@@ -146,3 +193,26 @@ class Fire {
 // }
 
 }
+//  "products": FieldValue.arrayUnion([
+//             {
+
+        // }, SetOptions(merge: true)).then((value) => {status = "Done"});
+
+
+//addProductsCode 
+  // await shops
+        //     .doc(shopName)
+        //     .collection("products")
+        //     .doc(tempBrand.replaceAll(' ', '') +
+        //         tempPhoneModel.replaceAll(' ', '') +
+        //         tempRam.replaceAll(' ', '') +
+        //         tempStorage.replaceAll(' ', ''))
+        //     .set({
+        //   "product_brand": tempBrand,
+        //   "product_model": tempPhoneModel,
+        //   "product_ram": tempRam,
+        //   "product_storage": tempStorage,
+        //   "product_price": price.toString().trim(),
+        //   "product_quantity": quantity.toString().trim(),
+        //   "_last_updated": DateTime.now()
+        // }).then((value) => {status = "Done"});
