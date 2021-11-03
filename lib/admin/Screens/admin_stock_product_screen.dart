@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shops_manager/admin/Screens/admin_same_brand_products.dart';
 
-import 'package:shops_manager/widgets/title_text.dart';
 import 'package:shops_manager/export.dart';
 
 import 'admin_sales_report.dart';
@@ -20,37 +19,36 @@ class _AdminStockProductScreenState extends State<AdminStockProductScreen> {
   var shopsData;
   var shopName = '';
   var brands = [];
+  var temp = [];
   var eachBrandData = [];
 
   @override
   void initState() {
     super.initState();
-    shopsData = widget.data['products'];
-
+    brands = [];
     shopName = widget.data['shopName'];
-
-    filter();
+    set();
   }
 
-  void filter() {
-    for (var i = 0; i < shopsData.length; i++) {
-      if (brands.contains(
-              shopsData[i]['product_brand']?.toString().toLowerCase().trim()) ==
-          false) {
-        setState(() {
-          brands.add(
-              shopsData[i]['product_brand']?.toString().toLowerCase().trim());
-        });
-      }
+  void set() {
+    if (shopName.length > 0) {
+    } else {
+      print("NO Shop Name");
     }
-    // print(brands);
+  }
 
-    // print(brands);
-    // print(eachBrandData);
+  void filter(docs) {
+    print(docs[0]['product_brand']);
+    print(temp);
   }
 
   @override
   Widget build(BuildContext context) {
+    Stream<QuerySnapshot> productsStream = FirebaseFirestore.instance
+        .collection('shops')
+        .doc(shopName)
+        .collection('products')
+        .snapshots();
     return Scaffold(
       floatingActionButton: FloatingActionButton(
         onPressed: () {
@@ -64,7 +62,7 @@ class _AdminStockProductScreenState extends State<AdminStockProductScreen> {
         },
         child: Icon(Icons.add),
       ),
-      appBar: app_bar(title: 'Stock'),
+      appBar: app_bar(title: 'Stock', actionText: shopName),
       bottomSheet: btn(
         btnTitle: "SELES",
         action: () {
@@ -76,41 +74,80 @@ class _AdminStockProductScreenState extends State<AdminStockProductScreen> {
           );
         },
       ),
-      body: Container(
-        child: GridView.builder(
-          shrinkWrap: true,
-          itemCount: brands.length + 3,
-          gridDelegate:
-              SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 3),
-          itemBuilder: (BuildContext context, int index) {
-            return brands.length > index
-                ? InkWell(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (BuildContext context) =>
-                              AdminSameBrandProducts(
-                                  shopName: shopName,
-                                  brandsData: shopsData,
-                                  brand: brands[index]),
+      body: StreamBuilder<QuerySnapshot>(
+        stream: productsStream,
+        builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+          if (snapshot.hasError) {
+            return Text('Something went wrong');
+          }
+
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(child: CircularProgressIndicator());
+          }
+          if (snapshot.hasData) {
+            var docs = snapshot.data?.docs;
+            shopsData = docs;
+            print(docs!.length);
+            var tempAllBrands = [];
+            var tempBrands = [];
+            for (var i = 0; i < docs.length; i++) {
+              var brd = docs[i]['product_brand'];
+              tempAllBrands.add(brd);
+            }
+            print(tempAllBrands);
+            for (var i = 0; i < tempAllBrands.length; i++) {
+              print(tempAllBrands[i]);
+              if (tempBrands.contains(
+                    tempAllBrands[i].toString().toLowerCase().trim(),
+                  ) ==
+                  false) {
+                tempBrands.add(
+                  tempAllBrands[i].toString().toLowerCase().trim(),
+                );
+              }
+            }
+            brands = tempBrands;
+            print(brands);
+          }
+
+          return Container(
+            child: GridView.builder(
+              shrinkWrap: true,
+              itemCount: brands.length + 3,
+              gridDelegate:
+                  SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 3),
+              itemBuilder: (BuildContext context, int index) {
+                return brands.length > index
+                    ? InkWell(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (BuildContext context) =>
+                                  AdminSameBrandProducts(
+                                shopName: shopName,
+                                brandsData: shopsData,
+                                brand: brands[index],
+                              ),
+                            ),
+                          );
+                        },
+                        child: new Card(
+                          elevation: 0,
+                          child: Center(
+                            child: Text(brands[index] ?? ""),
+                          ),
+                        ),
+                      )
+                    : Container(
+                        child: SizedBox(
+                          height: 100,
                         ),
                       );
-                    },
-                    child: new Card(
-                      elevation: 0,
-                      child: Center(
-                        child: Text(brands[index] ?? ""),
-                      ),
-                    ),
-                  )
-                : Container(
-                    child: SizedBox(
-                      height: 100,
-                    ),
-                  );
-          },
-        ),
+              },
+            ),
+          );
+        },
       ),
     );
   }

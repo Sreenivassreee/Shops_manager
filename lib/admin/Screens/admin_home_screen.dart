@@ -62,12 +62,13 @@ class _AdminHomepageState extends State<AdminHomepage> {
               var productCount = "0";
               var managerName = data['user_name'];
               var shopName = data["shop_name"];
-
-              if (data["products"]?.length != null) {
-                var len = data["products"]?.length;
-                products = data["products"];
-                productCount = len.toString();
-              }
+              print(data);
+              // if (data["products"]?.length != null) {
+              //   var len = data["products"]?.length;
+              //   print(data);
+              //   // products = data.products;
+              //   productCount = len.toString();
+              // }
 
               var tempData = {
                 "shopName": shopName,
@@ -86,7 +87,6 @@ class _AdminHomepageState extends State<AdminHomepage> {
                           AdminStockProductScreen(
                         data: tempData = {
                           "shopName": shopName,
-                          "products": products,
                           "manager": managerName
                         },
                       ),

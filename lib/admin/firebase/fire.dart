@@ -109,6 +109,7 @@ class Fire {
           "product_brand": tempBrand,
           "product_model": tempPhoneModel,
           "product_price": tempPrice,
+          "product_ram": tempRam,
           "product_storage": tempStorage,
           "product_quantity": tempQantity,
           "_last_updated": FieldValue.arrayUnion([
@@ -167,6 +168,7 @@ class Fire {
     }
   }
 
+//NO NEED
   Future<String> EditProductToShop(
       {shopName, brand, phoneModel, ram, storage, price, quantity}) async {
     var status = '';
@@ -198,7 +200,56 @@ class Fire {
 
 // }
 
+  Future<String> UpdateToDeleteProduct(
+      {shopName,
+      brand,
+      phoneModel,
+      ram,
+      storage,
+      price,
+      quantity,
+      isDeleted}) async {
+    var status = '';
+    try {
+      if (shopName == null) {
+        status = "NoShop";
+      } else {
+        var tempBrand = brand.toString().toLowerCase().trim();
+        var tempPhoneModel = phoneModel.toLowerCase().toString().trim();
+        var tempRam = ram.toString().toLowerCase().trim();
+        var tempStorage = storage.toString().toLowerCase().trim();
+
+        await shops
+            .doc(shopName)
+            .collection("products")
+            .doc(tempBrand.replaceAll(' ', '') +
+                tempPhoneModel.replaceAll(' ', '') +
+                tempRam.replaceAll(' ', '') +
+                tempStorage.replaceAll(' ', ''))
+            .update({
+          "_isDeleted": isDeleted,
+          "_last_updated": FieldValue.arrayUnion([
+            {
+              'updatedBy': "NeedToAdd",
+              'changes': "NeedToAdd",
+              'timestamp': DateTime.now().toString(),
+            }
+          ])
+        }).then((value) => {status = "Done"});
+      }
+      return status;
+    } catch (e) {
+      print(e);
+      status = "Error";
+      return status;
+    }
+  }
 }
+
+
+
+
+
 //  "products": FieldValue.arrayUnion([
 //             {
 

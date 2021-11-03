@@ -1,10 +1,10 @@
+import 'package:flutter/cupertino.dart';
 import 'package:shops_manager/admin/Screens/admin_final_alert.dart';
 import 'package:shops_manager/export.dart';
 
 class AdminEditProducts extends StatefulWidget {
   var shopName;
   var eachProduct;
-
   AdminEditProducts({Key? key, this.shopName, this.eachProduct})
       : super(key: key);
 
@@ -17,6 +17,7 @@ class _AdminEditProductsState extends State<AdminEditProducts> {
   var eachProduct;
   var brand = '';
   var error = '';
+  bool isDeleted = false;
   TextEditingController phoneModel = TextEditingController();
   TextEditingController ram = TextEditingController();
   TextEditingController storage = TextEditingController();
@@ -34,6 +35,12 @@ class _AdminEditProductsState extends State<AdminEditProducts> {
     storage.text = widget.eachProduct?['product_storage'];
     price.text = widget.eachProduct?['product_price'];
     quantity.text = widget.eachProduct?['product_quantity'];
+    try {
+      isDeleted = widget.eachProduct?['_isDeleted'];
+      print(isDeleted);
+    } catch (e) {
+      print(e);
+    }
   }
 
   @override
@@ -42,7 +49,7 @@ class _AdminEditProductsState extends State<AdminEditProducts> {
       bottomSheet: btn(
           btnTitle: "NEXT",
           action: () async {
-            await fire.EditProductToShop(
+            await fire.UpdateProductToShop(
                     shopName: widget.shopName,
                     brand: brand,
                     phoneModel: phoneModel.text,
@@ -92,6 +99,7 @@ class _AdminEditProductsState extends State<AdminEditProducts> {
                 controller: phoneModel,
                 decoration: InputDecoration(
                   border: OutlineInputBorder(),
+                  enabled: false,
                   labelText: 'Phone model',
                 ),
               ),
@@ -103,6 +111,7 @@ class _AdminEditProductsState extends State<AdminEditProducts> {
                 decoration: InputDecoration(
                   border: OutlineInputBorder(),
                   labelText: 'ram',
+                  enabled: false,
                 ),
               ),
             ),
@@ -113,6 +122,7 @@ class _AdminEditProductsState extends State<AdminEditProducts> {
                 decoration: InputDecoration(
                   border: OutlineInputBorder(),
                   labelText: 'Storage',
+                  enabled: false,
                 ),
               ),
             ),
@@ -136,9 +146,91 @@ class _AdminEditProductsState extends State<AdminEditProducts> {
                 ),
               ),
             ),
+            SizedBox(height: 10),
+            Card(
+              elevation: 0,
+              child: Padding(
+                padding:
+                    const EdgeInsets.symmetric(vertical: 10, horizontal: 18),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text("is Deleted ?"),
+                    CupertinoSwitch(
+                      trackColor: Colors.green,
+                      activeColor: Colors.red,
+                      value: isDeleted,
+                      onChanged: (bool value) {
+                        setState(() async {
+                          print(value);
+                          isDeleted = !isDeleted;
+                          await fire.UpdateToDeleteProduct(
+                                  shopName: widget.shopName,
+                                  brand: brand,
+                                  phoneModel: phoneModel.text,
+                                  ram: ram.text,
+                                  storage: storage.text,
+                                  price: price.text,
+                                  quantity: quantity.text,
+                                  isDeleted: isDeleted)
+                              .then(
+                            (value) => {
+                              if (value == "Done")
+                                {
+                                  Navigator.pushAndRemoveUntil(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (_) => AdminHomepage(),
+                                      ),
+                                      (route) => false)
+                                }
+                              else if (value == "NoShop")
+                                {error = "No shop Error"}
+                              else if (value == "Error")
+                                {error = "Failed"}
+                              else
+                                {error = "Un Expected"}
+                            },
+                          );
+                        });
+                      },
+                    ),
+                  ],
+                ),
+              ),
+            ),
           ],
         ),
       ),
     );
   }
 }
+//   Widget _showDialog(BuildContext context) {
+//     return CupertinoAlertDialog(
+//       title: Column(
+//         children: <Widget>[
+//           Text("Do you want to delete"),
+//         ],
+//       ),
+//       content: new Text(""),
+//       actions: <Widget>[
+//         CupertinoDialogAction(
+//           child: Text("CANCEL"),
+//           onPressed: () {
+//             Navigator.of(context).pop();
+//           },
+//         ),
+//         CupertinoDialogAction(
+//           child: Text(
+//             "YES",
+//             style: TextStyle(color: Colors.red),
+//           ),
+//           onPressed: () {
+//             // fire.UpdateToDeleteProduct();
+//             Navigator.of(context).pop();
+//           },
+//         ),
+//       ],
+//     );
+//   }
+// }

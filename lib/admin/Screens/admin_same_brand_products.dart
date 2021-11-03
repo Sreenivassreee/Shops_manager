@@ -62,6 +62,11 @@ class _AdminSameBrandProductsState extends State<AdminSameBrandProducts> {
                 eachBrandProducts[index]['product_price'] ?? "None";
             var productQuantity =
                 eachBrandProducts[index]['product_quantity'] ?? "0";
+            var _isDeleted = false;
+            try {
+              _isDeleted = eachBrandProducts[index]['_isDeleted'] ?? false;
+            } catch (e) {}
+
             return InkWell(
               onTap: () {
                 Navigator.push(
@@ -116,7 +121,23 @@ class _AdminSameBrandProductsState extends State<AdminSameBrandProducts> {
                             ],
                           ),
                           SizedBox(height: 5),
-                          Text(productPrice + "/-"),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(productPrice + "/-"),
+                              _isDeleted
+                                  ? Padding(
+                                      padding:
+                                          const EdgeInsets.only(right: 8.0),
+                                      child: Container(
+                                        child: CircleAvatar(
+                                          radius: 4,
+                                        ),
+                                      ),
+                                    )
+                                  : SizedBox.shrink()
+                            ],
+                          ),
                         ],
                       ),
                     ],
@@ -130,3 +151,5 @@ class _AdminSameBrandProductsState extends State<AdminSameBrandProducts> {
     );
   }
 }
+
+class CircularAvatar {}

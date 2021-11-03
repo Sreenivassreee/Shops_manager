@@ -5,9 +5,17 @@ PreferredSizeWidget app_bar({title, actionText}) {
     automaticallyImplyLeading: false,
     elevation: 0,
     actions: [
-      TitleText(
-        title: actionText ?? "",
-      ),
+      Container(
+        alignment: Alignment.topLeft,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 10),
+          child: Text(
+            actionText ?? " ",
+            style: TextStyle(
+                fontSize: 20, fontWeight: FontWeight.bold, color: Colors.black),
+          ),
+        ),
+      )
     ],
     title: TitleText(
       title: title ?? "",
