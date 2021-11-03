@@ -1,44 +1,35 @@
-import 'package:shops_manager/admin/Screens/admin_add_products.dart';
+import 'package:flutter/material.dart';
 import 'package:shops_manager/admin/Screens/admin_edit_products.dart';
+
+import 'package:shops_manager/widgets/title_text.dart';
 import 'package:shops_manager/export.dart';
 
-class AdminSameBrandProducts extends StatefulWidget {
+class SameBrandProducts extends StatefulWidget {
   var shopName;
   var brand;
   var brandsData;
-  AdminSameBrandProducts({Key? key, this.brand, this.brandsData, this.shopName})
+  SameBrandProducts({Key? key, this.shopName, this.brand, this.brandsData})
       : super(key: key);
 
   @override
-  State<AdminSameBrandProducts> createState() => _AdminSameBrandProductsState();
+  State<SameBrandProducts> createState() => _SameBrandProductsState();
 }
 
-class _AdminSameBrandProductsState extends State<AdminSameBrandProducts> {
+class _SameBrandProductsState extends State<SameBrandProducts> {
   var brandData = [];
   var eachBrandProducts = [];
   @override
   void initState() {
     super.initState();
-    // print(widget.brand);
 
     brandData = widget.brandsData;
 
     for (var i = 0; i < brandData.length; i++) {
-      // print(brands);
-
       if (brandData[i]['product_brand'].toUpperCase() ==
           widget.brand.toUpperCase()) {
         eachBrandProducts.add(brandData[i]);
       }
-
-      //   eachBrandProducts.add(brands
-      //       .where((a) =>
-      //           shopsData[i]['product_brand'].toString().toLowerCase().trim() ==
-      //           a.trim())
-      //       .toList());
     }
-    // print("Each");
-    // print(eachBrandProducts);
   }
 
   @override
@@ -73,9 +64,10 @@ class _AdminSameBrandProductsState extends State<AdminSameBrandProducts> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (BuildContext context) => AdminEditProducts(
-                        shopName: widget.shopName,
-                        eachProduct: eachBrandProducts[index]),
+                    builder: (BuildContext context) => ProductDetails(
+                        // shopName: widget.shopName,
+                        // eachProduct: eachBrandProducts[index]
+                        ),
                   ),
                 );
               },

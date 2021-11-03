@@ -87,7 +87,10 @@ class _LoginPageState extends State<LoginPage> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (BuildContext context) => AdminHomepage(),
+                      builder: (BuildContext context) => Homepage(
+                        shopName: "shop",
+                        userName: "Userstock",
+                      ),
                     ),
                   );
                   //   if (shopNameController.text.isEmpty ||

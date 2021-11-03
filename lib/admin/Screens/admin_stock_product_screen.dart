@@ -21,6 +21,7 @@ class _AdminStockProductScreenState extends State<AdminStockProductScreen> {
   var brands = [];
   var temp = [];
   var eachBrandData = [];
+  Stream<QuerySnapshot>? AdminProductsStream;
 
   @override
   void initState() {
@@ -28,6 +29,11 @@ class _AdminStockProductScreenState extends State<AdminStockProductScreen> {
     brands = [];
     shopName = widget.data['shopName'];
     set();
+    AdminProductsStream = FirebaseFirestore.instance
+        .collection('shops')
+        .doc(shopName)
+        .collection('products')
+        .snapshots();
   }
 
   void set() {
@@ -44,11 +50,6 @@ class _AdminStockProductScreenState extends State<AdminStockProductScreen> {
 
   @override
   Widget build(BuildContext context) {
-    Stream<QuerySnapshot> productsStream = FirebaseFirestore.instance
-        .collection('shops')
-        .doc(shopName)
-        .collection('products')
-        .snapshots();
     return Scaffold(
       floatingActionButton: FloatingActionButton(
         onPressed: () {
@@ -75,7 +76,7 @@ class _AdminStockProductScreenState extends State<AdminStockProductScreen> {
         },
       ),
       body: StreamBuilder<QuerySnapshot>(
-        stream: productsStream,
+        stream: AdminProductsStream,
         builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
           if (snapshot.hasError) {
             return Text('Something went wrong');
