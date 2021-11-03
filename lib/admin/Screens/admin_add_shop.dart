@@ -16,7 +16,7 @@ class _AdminAddShopState extends State<AdminAddShop> {
   TextEditingController phoneNumber = TextEditingController();
   var _isActive = false;
   var isAdmin = false;
-
+  var error = "";
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -143,7 +143,19 @@ class _AdminAddShopState extends State<AdminAddShop> {
                     isActive: _isActive,
                     isAdmin: isAdmin)
                 .then((v) {
-              print(v);
+              if (v == "AlreadyUser") {
+                error = "AlreadyUser";
+              } else if (v == "error") {
+                error = "Error";
+              } else if (v == "Added") {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (BuildContext context) => AdminHomepage(),
+                  ),
+                );
+              }
+              print(v + "YOYO");
             });
           }
 

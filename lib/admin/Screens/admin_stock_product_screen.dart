@@ -37,10 +37,10 @@ class _AdminStockProductScreenState extends State<AdminStockProductScreen> {
     }
   }
 
-  void filter(docs) {
-    print(docs[0]['product_brand']);
-    print(temp);
-  }
+  // void filter(docs) {
+  //   print(docs[0]['product_brand']);
+  //   print(temp);
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -87,27 +87,30 @@ class _AdminStockProductScreenState extends State<AdminStockProductScreen> {
           if (snapshot.hasData) {
             var docs = snapshot.data?.docs;
             shopsData = docs;
-            print(docs!.length);
+            // print(docs!.length);
             var tempAllBrands = [];
             var tempBrands = [];
-            for (var i = 0; i < docs.length; i++) {
-              var brd = docs[i]['product_brand'];
-              tempAllBrands.add(brd);
-            }
-            print(tempAllBrands);
-            for (var i = 0; i < tempAllBrands.length; i++) {
-              print(tempAllBrands[i]);
-              if (tempBrands.contains(
-                    tempAllBrands[i].toString().toLowerCase().trim(),
-                  ) ==
-                  false) {
-                tempBrands.add(
-                  tempAllBrands[i].toString().toLowerCase().trim(),
-                );
+            try {
+              for (var i = 0; i < docs!.length; i++) {
+                var brd = docs[i]['product_brand'];
+                tempAllBrands.add(brd);
               }
+              print(tempAllBrands);
+              for (var i = 0; i < tempAllBrands.length; i++) {
+                print(tempAllBrands[i]);
+                if (tempBrands.contains(
+                      tempAllBrands[i].toString().toLowerCase().trim(),
+                    ) ==
+                    false) {
+                  tempBrands.add(
+                    tempAllBrands[i].toString().toLowerCase().trim(),
+                  );
+                }
+              }
+              brands = tempBrands;
+            } catch (e) {
+              print("[Error in AdminStockProductScreen => 112]");
             }
-            brands = tempBrands;
-            print(brands);
           }
 
           return Container(

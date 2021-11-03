@@ -43,11 +43,12 @@ class Fire {
     var status = '';
     try {
       shopId = shopId.toLowerCase();
-      await users.doc(shopId).get().then((v) {
+      await users.doc(shopId).get().then((v) async {
         if (v.exists) {
           status = "AlreadyUser";
         } else {
-          users
+          print("Else");
+          await users
               .doc(shopId)
               .set({
                 'shop_name': shopId,
@@ -59,6 +60,8 @@ class Fire {
                 'time_stamp': DateTime.now()
               }, SetOptions(merge: true))
               .then((value) => {
+                    print("Else2"),
+                    status = "Added",
                     if (!isAdmin)
                       {
                         shops
@@ -70,17 +73,25 @@ class Fire {
                             }, SetOptions(merge: true))
                             .then((value) => status = "Added")
                             .catchError((error) => status = "error")
-                      },
+                      }
+                    else
+                      {
+                        print("Else3"),
+                        status = "Added",
+                      }
                   })
-              .catchError((error) {
-                status = "error";
-              });
+              .catchError(
+                (error) {
+                  status = "error";
+                },
+              );
         }
       });
+      print("Else4");
       return status;
     } catch (e) {
       print(e);
-      status = "Error";
+      status = "error";
       return status;
     }
   }
@@ -130,7 +141,14 @@ class Fire {
   }
 
   Future<String> UpdateProductToShop(
-      {shopName, brand, phoneModel, ram, storage, price, quantity}) async {
+      {shopName,
+      brand,
+      phoneModel,
+      ram,
+      storage,
+      price,
+      quantity,
+      isDeleted}) async {
     var status = '';
     try {
       if (shopName == null) {
@@ -151,6 +169,7 @@ class Fire {
             .update({
           "product_price": price.toString().trim(),
           "product_quantity": quantity.toString().trim(),
+          "_isDeleted": isDeleted,
           "_last_updated": FieldValue.arrayUnion([
             {
               'updatedBy': "NeedToAdd",
@@ -227,7 +246,6 @@ class Fire {
                 tempRam.replaceAll(' ', '') +
                 tempStorage.replaceAll(' ', ''))
             .update({
-          "_isDeleted": isDeleted,
           "_last_updated": FieldValue.arrayUnion([
             {
               'updatedBy': "NeedToAdd",

@@ -19,7 +19,7 @@ class _AdminSameBrandProductsState extends State<AdminSameBrandProducts> {
   @override
   void initState() {
     super.initState();
-    print(widget.brand);
+    // print(widget.brand);
 
     brandData = widget.brandsData;
 
@@ -37,14 +37,15 @@ class _AdminSameBrandProductsState extends State<AdminSameBrandProducts> {
       //           a.trim())
       //       .toList());
     }
-    print("Each");
-    print(eachBrandProducts);
+    // print("Each");
+    // print(eachBrandProducts);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: app_bar(title: widget.brand.toUpperCase()),
+      appBar: app_bar(
+          title: widget.brand.toUpperCase(), actionText: widget.shopName ?? ""),
       body: Container(
         height: MediaQuery.of(context).size.height - 90,
         child: GridView.builder(

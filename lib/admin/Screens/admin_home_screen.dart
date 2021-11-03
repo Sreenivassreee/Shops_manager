@@ -50,7 +50,7 @@ class _AdminHomepageState extends State<AdminHomepage> {
           }
           if (snapshot.hasData) {
             // print(snapshot.data?.docs[0]['products'][0]['product_ram']);
-            print("Data");
+            // print("Data");
           }
 
           return ListView(
@@ -62,7 +62,7 @@ class _AdminHomepageState extends State<AdminHomepage> {
               var productCount = "0";
               var managerName = data['user_name'];
               var shopName = data["shop_name"];
-              print(data);
+              // print(data);
               // if (data["products"]?.length != null) {
               //   var len = data["products"]?.length;
               //   print(data);

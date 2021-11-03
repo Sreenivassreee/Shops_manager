@@ -26,7 +26,7 @@ class _AdminEditProductsState extends State<AdminEditProducts> {
 
   @override
   void initState() {
-    print(widget.shopName);
+    // print(widget.shopName);
     super.initState();
 
     brand = widget.eachProduct?['product_brand'];
@@ -37,7 +37,7 @@ class _AdminEditProductsState extends State<AdminEditProducts> {
     quantity.text = widget.eachProduct?['product_quantity'];
     try {
       isDeleted = widget.eachProduct?['_isDeleted'];
-      print(isDeleted);
+      // print(isDeleted);
     } catch (e) {
       print(e);
     }
@@ -56,7 +56,8 @@ class _AdminEditProductsState extends State<AdminEditProducts> {
                     ram: ram.text,
                     storage: storage.text,
                     price: price.text,
-                    quantity: quantity.text)
+                    quantity: quantity.text,
+                    isDeleted: isDeleted)
                 .then((value) => {
                       if (value == "Done")
                         {
@@ -161,37 +162,8 @@ class _AdminEditProductsState extends State<AdminEditProducts> {
                       activeColor: Colors.red,
                       value: isDeleted,
                       onChanged: (bool value) {
-                        setState(() async {
-                          print(value);
+                        setState(() {
                           isDeleted = !isDeleted;
-                          await fire.UpdateToDeleteProduct(
-                                  shopName: widget.shopName,
-                                  brand: brand,
-                                  phoneModel: phoneModel.text,
-                                  ram: ram.text,
-                                  storage: storage.text,
-                                  price: price.text,
-                                  quantity: quantity.text,
-                                  isDeleted: isDeleted)
-                              .then(
-                            (value) => {
-                              if (value == "Done")
-                                {
-                                  Navigator.pushAndRemoveUntil(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (_) => AdminHomepage(),
-                                      ),
-                                      (route) => false)
-                                }
-                              else if (value == "NoShop")
-                                {error = "No shop Error"}
-                              else if (value == "Error")
-                                {error = "Failed"}
-                              else
-                                {error = "Un Expected"}
-                            },
-                          );
                         });
                       },
                     ),
