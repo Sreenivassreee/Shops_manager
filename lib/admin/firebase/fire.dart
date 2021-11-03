@@ -111,7 +111,13 @@ class Fire {
           "product_price": tempPrice,
           "product_storage": tempStorage,
           "product_quantity": tempQantity,
-          "_last_updated": DateTime.now()
+          "_last_updated": FieldValue.arrayUnion([
+            {
+              'updatedBy': "NeedToAdd",
+              'changes': "NeedToAdd",
+              'timestamp': DateTime.now().toString(),
+            }
+          ])
         }).then((value) => {status = "Done"});
       }
       return status;
