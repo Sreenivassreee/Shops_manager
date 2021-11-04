@@ -1,12 +1,45 @@
 import '/export.dart';
+import 'dart:io';
+import 'package:intl/intl.dart';
 
-class ProductDetails extends StatelessWidget {
-  const ProductDetails({Key? key}) : super(key: key);
+class ProductDetails extends StatefulWidget {
+  var eachProduct;
+  ProductDetails({Key? key, this.eachProduct}) : super(key: key);
+
+  @override
+  State<ProductDetails> createState() => _ProductDetailsState();
+}
+
+class _ProductDetailsState extends State<ProductDetails> {
+  var productModel;
+  var productRam;
+  var productStorage;
+  var productPrice;
+  var productQuantity;
+  var productBrand;
+
+  final formatCurrency =
+      NumberFormat.simpleCurrency(locale: Platform.localeName, name: 'INR');
+  @override
+  void initState() {
+    super.initState();
+    productModel = widget.eachProduct['product_model'] ?? "";
+    productRam = widget.eachProduct['product_ram'] ?? "0";
+    productStorage = widget.eachProduct['product_storage'] ?? "0";
+    productPrice = widget.eachProduct['product_price'] ?? "None";
+    productQuantity = widget.eachProduct['product_quantity'] ?? "0";
+    productBrand = widget.eachProduct['product_brand'] ?? "0";
+    productPrice = formatCurrency.format(int.parse(productPrice));
+    productPrice = productPrice.split('.');
+    productPrice = productPrice[0];
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: app_bar(title: 'MI NOTE 10', actionText: "100"),
+      appBar: app_bar(
+          title: productModel.toUpperCase(),
+          actionText: productQuantity + "   "),
       bottomSheet: Container(
         height: 120,
         child: Column(
@@ -17,7 +50,8 @@ class ProductDetails extends StatelessWidget {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (BuildContext context) => SalePage(),
+                    builder: (BuildContext context) =>
+                        SalePage(eachProduct: widget.eachProduct),
                   ),
                 );
               },
@@ -45,30 +79,30 @@ class ProductDetails extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  "Brand : MI",
+                  "Brand : " + productBrand.toUpperCase(),
                   style: TextStyle(fontSize: 20),
                 ),
                 Text(
-                  "Model : Note 10",
+                  "Model : " + productModel.toUpperCase(),
                   style: TextStyle(fontSize: 20),
                 ),
                 Text(
-                  "Ram : 2gb ",
+                  "Ram : " + productRam.toUpperCase() + " GB",
                   style: TextStyle(fontSize: 20),
                 ),
                 Text(
-                  "Storage : 32gb ",
+                  "Storage : " + productStorage.toUpperCase() + " GB",
                   style: TextStyle(fontSize: 20),
                 ),
                 SizedBox(
                   height: 50,
                 ),
                 Text(
-                  "MRP : 10,000/-",
+                  "MRP : " + productPrice.toUpperCase() + " /-",
                   style: TextStyle(fontSize: 20, color: Colors.green),
                 ),
                 Text(
-                  "Available Stock : 100",
+                  "Available Stock : " + productQuantity.toUpperCase(),
                   style: TextStyle(fontSize: 20, color: Colors.green),
                 ),
               ],

@@ -64,34 +64,41 @@ class _SameBrandProductsState extends State<SameBrandProducts> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (BuildContext context) => ProductDetails(
-                        // shopName: widget.shopName,
-                        // eachProduct: eachBrandProducts[index]
-                        ),
+                    builder: (BuildContext context) =>
+                        ProductDetails(eachProduct: eachBrandProducts[index]),
                   ),
                 );
               },
               child: Card(
                 elevation: 0,
                 child: Padding(
-                  padding: const EdgeInsets.only(left: 20),
+                  padding: const EdgeInsets.all(5),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        // "Note 4 2gb 64gb",
+                      Container(
+                        width: double.infinity,
+                        color: Colors.green[200],
+                        child: Text(
+                          // "Note 4 2gb 64gb",
 
-                        productModel +
-                            "   " +
-                            productRam +
-                            "GB" +
-                            "   " +
-                            productStorage +
-                            "GB",
+                          productModel ?? "",
+                          textAlign: TextAlign.center,
 
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 17),
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 17,
+                          ),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(1.0),
+                        child: Text(
+                          productRam + "GB" + "   " + productStorage + "GB",
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 17),
+                        ),
                       ),
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -100,13 +107,16 @@ class _SameBrandProductsState extends State<SameBrandProducts> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text(
-                                "Stock",
-                                style: TextStyle(color: Colors.green),
+                                productPrice + "/-",
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 17,
+                                ),
                               ),
                               Padding(
                                 padding: const EdgeInsets.only(right: 10),
                                 child: CircleAvatar(
-                                  radius: 20,
+                                  radius: 15,
                                   backgroundColor: Colors.black,
                                   child: Text(productQuantity),
                                 ),
@@ -117,7 +127,7 @@ class _SameBrandProductsState extends State<SameBrandProducts> {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Text(productPrice + "/-"),
+                              Text(""),
                               _isDeleted
                                   ? Padding(
                                       padding:
