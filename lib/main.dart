@@ -1,5 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:shops_manager/pdf/page/pdf_page.dart';
+
 
 import 'export.dart';
 
@@ -52,7 +54,7 @@ class MyApp extends StatelessWidget {
           // dialogBackgroundColor: Colors.yellow,
           // ),
           ),
-      home: LoginPage(),
+      home: PdfPage()
     );
   }
 

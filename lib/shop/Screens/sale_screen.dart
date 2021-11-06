@@ -1,5 +1,5 @@
 import 'package:shops_manager/shop/Customer_Firebase.dart';
-import 'package:shops_manager/shop/models/customer.dart';
+import 'package:shops_manager/shop/models/cus.dart';
 
 import '/export.dart';
 import 'dart:io';
@@ -21,12 +21,13 @@ class _SalePageState extends State<SalePage> {
   var productQuantity;
   var productBrand;
   var cFire = CFireBase();
-  var CustomerName = TextEditingController();
-  var CustomerSellingPrice = TextEditingController();
-  var CustomerMobile = TextEditingController();
-  var CustomerAddress = TextEditingController();
-  var CustomerMail = TextEditingController();
-  var CustomerQuantity = TextEditingController();
+  var customerName = TextEditingController();
+  var customerSellingPrice = TextEditingController();
+  var customerMobile = TextEditingController();
+  var customerAddress = TextEditingController();
+  var customerMail = TextEditingController();
+  var customerQuantity = TextEditingController();
+  var internalSellingPrice = TextEditingController();
   var error = "";
   var customer;
   var id;
@@ -45,7 +46,7 @@ class _SalePageState extends State<SalePage> {
     productPrice = formatCurrency.format(int.parse(productPrice));
     productPrice = productPrice.split('.');
     productPrice = productPrice[0];
-    CustomerQuantity.text = "1";
+    customerQuantity.text = "1";
     try {
       id = productBrand.replaceAll(' ', '') +
           productModel.replaceAll(' ', '') +
@@ -113,31 +114,20 @@ class _SalePageState extends State<SalePage> {
               padding: EdgeInsets.fromLTRB(10, 10, 10, 0),
               child: TextField(
                 keyboardType: TextInputType.number,
-                controller: CustomerQuantity,
+                controller: customerQuantity,
                 decoration: InputDecoration(
                   border: OutlineInputBorder(),
-                  labelText: 'Quantity => R',
+                  labelText: 'Quantity         R',
                 ),
               ),
             ),
             Container(
               padding: EdgeInsets.fromLTRB(10, 10, 10, 0),
               child: TextField(
-                controller: CustomerName,
+                controller: customerName,
                 decoration: InputDecoration(
                   border: OutlineInputBorder(),
-                  labelText: 'Name => R',
-                ),
-              ),
-            ),
-            Container(
-              padding: EdgeInsets.fromLTRB(10, 10, 10, 0),
-              child: TextField(
-                keyboardType: TextInputType.number,
-                controller: CustomerSellingPrice,
-                decoration: InputDecoration(
-                  border: OutlineInputBorder(),
-                  labelText: 'Selling price => R',
+                  labelText: 'Name         R',
                 ),
               ),
             ),
@@ -145,17 +135,28 @@ class _SalePageState extends State<SalePage> {
               padding: EdgeInsets.fromLTRB(10, 10, 10, 0),
               child: TextField(
                 keyboardType: TextInputType.number,
-                controller: CustomerMobile,
+                controller: customerSellingPrice,
                 decoration: InputDecoration(
                   border: OutlineInputBorder(),
-                  labelText: 'Whats App Number => R',
+                  labelText: 'Selling price         R',
                 ),
               ),
             ),
             Container(
               padding: EdgeInsets.fromLTRB(10, 10, 10, 0),
               child: TextField(
-                controller: CustomerMail,
+                keyboardType: TextInputType.number,
+                controller: customerMobile,
+                decoration: InputDecoration(
+                  border: OutlineInputBorder(),
+                  labelText: 'Whats App Number         R',
+                ),
+              ),
+            ),
+            Container(
+              padding: EdgeInsets.fromLTRB(10, 10, 10, 0),
+              child: TextField(
+                controller: customerMail,
                 decoration: InputDecoration(
                   border: OutlineInputBorder(),
                   labelText: 'mail',
@@ -165,10 +166,24 @@ class _SalePageState extends State<SalePage> {
             Container(
               padding: EdgeInsets.fromLTRB(10, 10, 10, 0),
               child: TextField(
-                controller: CustomerAddress,
+                controller: customerAddress,
                 decoration: InputDecoration(
                   border: OutlineInputBorder(),
                   labelText: 'Address',
+                ),
+              ),
+            ),
+            Container(
+              padding: EdgeInsets.fromLTRB(10, 10, 10, 0),
+              child: Container(
+                color: Colors.green[100],
+                child: TextField(
+                  keyboardType: TextInputType.number,
+                  controller: internalSellingPrice,
+                  decoration: InputDecoration(
+                    border: OutlineInputBorder(),
+                    labelText: 'Internal price         R',
+                  ),
                 ),
               ),
             ),
@@ -205,22 +220,23 @@ class _SalePageState extends State<SalePage> {
         child: btn(
           btnTitle: "CONFORM ORDER",
           action: () {
-            if (CustomerQuantity.text.isEmpty ||
-                CustomerName.text.isEmpty ||
-                CustomerSellingPrice.text.isEmpty ||
-                CustomerMobile.text.isEmpty) {
+            if (customerQuantity.text.isEmpty ||
+                customerName.text.isEmpty ||
+                customerSellingPrice.text.isEmpty ||
+                customerMobile.text.isEmpty ||
+                internalSellingPrice.text.isEmpty) {
               setState(() {
                 error = "Please provide valid Cretentials";
               });
             } else {
               customer = Customer(
-                name: CustomerName.text,
-                address: CustomerAddress.text,
-                mail: CustomerMail.text,
-                mobile: CustomerMobile.text,
+                name: customerName.text,
+                address: customerAddress.text,
+                mail: customerMail.text,
+                mobile: customerMobile.text,
               );
-              var totalPrice = int.parse(CustomerSellingPrice.text) *
-                  int.parse(CustomerQuantity.text);
+              var totalPrice = int.parse(customerSellingPrice.text) *
+                  int.parse(customerQuantity.text);
               // print(customer);
               // print(id);
               // print(CustomerSellingPrice.text);
@@ -233,18 +249,19 @@ class _SalePageState extends State<SalePage> {
                     id: id,
                     eachProduct: widget.eachProduct,
                     customer: customer,
-                    quantity: CustomerQuantity.text.toString(),
+                    quantity: customerQuantity.text.toString(),
                     totalPrice: totalPrice.toString(),
                     paymentMode: dropdownValue,
-                    customerSellingPrice: CustomerSellingPrice.text.toString(),
+                    customerSellingPrice: customerSellingPrice.text.toString(),
+                    internalSellingPrice: internalSellingPrice.text.toString(),
                   ),
                 ),
               );
             }
-            print(customer);
-            print(id);
-            print(CustomerSellingPrice.text);
-            print(CustomerQuantity.text);
+            // print(customer);
+            // print(id);
+            // print(customerSellingPrice.text);
+            // print(customerQuantity.text);
           },
         ),
       ),

@@ -13,6 +13,7 @@ class FinalAlert extends StatefulWidget {
   var totalPrice;
   var paymentMode;
   var customerSellingPrice;
+  var internalSellingPrice;
   FinalAlert({
     Key? key,
     this.id,
@@ -22,6 +23,7 @@ class FinalAlert extends StatefulWidget {
     this.totalPrice,
     this.paymentMode,
     this.customerSellingPrice,
+    this.internalSellingPrice,
   }) : super(key: key);
 
   @override
@@ -63,12 +65,30 @@ class _FinalAlertState extends State<FinalAlert> {
         btnTitle: "PAID",
         action: () async {
           await cFire.SellProduct(
-              customer: widget.customer,
-              id: widget.id,
-              toalPrice: price.toString(),
-              quantity: widget.quantity.toString(),
-              paymentMode: widget.paymentMode,
-              customerSellingPrice: widget.customerSellingPrice);
+                  customer: widget.customer,
+                  id: widget.id,
+                  toalPrice: price.toString(),
+                  quantity: widget.quantity.toString(),
+                  paymentMode: widget.paymentMode,
+                  customerSellingPrice: widget.customerSellingPrice,
+                  internalSellingPrice: widget.internalSellingPrice)
+              .then((v) => {
+                    print(v),
+                    if (v == "TransactionCompleted")
+                      {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (BuildContext context) => Homepage(),
+                          ),
+                        )
+                      }
+                    else
+                      {
+                        print("E is"),
+                        print(v),
+                      }
+                  });
           // Navigator.push(
           //   context,
           //   MaterialPageRoute(

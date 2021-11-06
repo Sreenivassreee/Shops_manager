@@ -84,58 +84,58 @@ class _LoginPageState extends State<LoginPage> {
                     error = '';
                   });
                   // Direct Login
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (BuildContext context) => Homepage(
-                        shopName: "shop",
-                        userName: "Userstock",
-                      ),
-                    ),
-                  );
-                  //   if (shopNameController.text.isEmpty ||
-                  //       userNameController.text.isEmpty ||
-                  //       passwordController.text.isEmpty) {
-                  //     setState(() {
-                  //       error = "Please provide valid Cretentials";
-                  //     });
-                  //   } else {
-                  //     fire.ValidateLogin(
-                  //             shopName: shopNameController.text,
-                  //             userName: userNameController.text,
-                  //             password: passwordController.text)
-                  //         .then((v) {
-                  //       if (v != Null) {
-                  //         if (v == 'admin') {
-                  //           Navigator.pushAndRemoveUntil(
-                  //               context,
-                  //               MaterialPageRoute(
-                  //                   builder: (BuildContext context) =>
-                  //                       AdminHomepage()),
-                  //               ModalRoute.withName(''));
-                  //         } else if (v == 'manager') {
-                  //           Navigator.pushAndRemoveUntil(
-                  //               context,
-                  //               MaterialPageRoute(
-                  //                   builder: (BuildContext context) =>
-                  //                       Homepage()),
-                  //               ModalRoute.withName(''));
-                  //         } else if (v == "notFound") {
-                  //           setState(() {
-                  //             error = "Invalid cretentials";
-                  //           });
-                  //         } else if (v == "blocked") {
-                  //           setState(() {
-                  //             error = "Blocked by Admin";
-                  //           });
-                  //         }
-                  //       } else {
-                  //         setState(() {
-                  //           error = 'Invalid Error';
-                  //         });
-                  //       }
-                  //     });
-                  //   }
+                  // Navigator.push(
+                  //   context,
+                  //   MaterialPageRoute(
+                  //     builder: (BuildContext context) => Homepage(
+                  //       shopName: "shop",
+                  //       userName: "Userstock",
+                  //     ),
+                  //   ),
+                  // );
+                  if (shopNameController.text.isEmpty ||
+                      userNameController.text.isEmpty ||
+                      passwordController.text.isEmpty) {
+                    setState(() {
+                      error = "Please provide valid Cretentials";
+                    });
+                  } else {
+                    fire.ValidateLogin(
+                            shopName: shopNameController.text,
+                            userName: userNameController.text,
+                            password: passwordController.text)
+                        .then((v) {
+                      if (v != Null) {
+                        if (v == 'admin') {
+                          Navigator.pushAndRemoveUntil(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (BuildContext context) =>
+                                      AdminHomepage()),
+                              ModalRoute.withName(''));
+                        } else if (v == 'manager') {
+                          Navigator.pushAndRemoveUntil(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (BuildContext context) =>
+                                      Homepage()),
+                              ModalRoute.withName(''));
+                        } else if (v == "notFound") {
+                          setState(() {
+                            error = "Invalid cretentials";
+                          });
+                        } else if (v == "blocked") {
+                          setState(() {
+                            error = "Blocked by Admin";
+                          });
+                        }
+                      } else {
+                        setState(() {
+                          error = 'Invalid Error';
+                        });
+                      }
+                    });
+                  }
                 }),
 
             // Container(
