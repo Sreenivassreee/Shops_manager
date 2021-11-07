@@ -1,4 +1,7 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:shops_manager/pdf/api/pdf_api.dart';
 import 'package:shops_manager/pdf/api/pdf_invoice_api.dart';
 import 'package:shops_manager/pdf/model/customer.dart';
@@ -6,7 +9,9 @@ import 'package:shops_manager/pdf/model/invoice.dart';
 import 'package:shops_manager/pdf/model/supplier.dart';
 import 'package:shops_manager/pdf/widget/button_widget.dart';
 import 'package:shops_manager/pdf/widget/title_widget.dart';
-
+import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
+import 'package:number_to_words/number_to_words.dart';
+import 'package:path_provider/path_provider.dart';
 
 class PdfPage extends StatefulWidget {
   @override
@@ -15,7 +20,14 @@ class PdfPage extends StatefulWidget {
 
 class _PdfPageState extends State<PdfPage> {
   @override
+  void initState() {
+    super.initState();
+    print(NumberToWord().convert('en-in',125000));
+  }
+
+  @override
   Widget build(BuildContext context) => Scaffold(
+
         backgroundColor: Colors.black,
         appBar: AppBar(
           title: Text("YOYO"),
@@ -37,16 +49,17 @@ class _PdfPageState extends State<PdfPage> {
                   onClicked: () async {
                     final date = DateTime.now();
                     final dueDate = date.add(Duration(days: 7));
-
                     final invoice = Invoice(
                       supplier: Supplier(
-                        name: 'Sarah Field',
-                        address: 'Sarah Street 9, Beijing, China',
-                        paymentInfo: 'https://paypal.me/sarahfieldzz',
+                        name: 'Shop Name',
+                        address: 'Shop address',
+                        paymentInfo: 'Thank you for shopping',
                       ),
-                      customer: Customer(
-                        name: 'Apple Inc.',
-                        address: 'Apple Street, Cupertino, CA 95014',
+                      customer: BillCustomer(
+                        mail: "Sree@gmail.com",
+                        mobile: "9505501046",
+                        name: 'Sreenivas K.',
+                        address: 'Eduru palamaner chittor'
                       ),
                       info: InvoiceInfo(
                         date: date,
@@ -56,60 +69,27 @@ class _PdfPageState extends State<PdfPage> {
                       ),
                       items: [
                         InvoiceItem(
-                          description: 'Coffee',
-                          date: DateTime.now(),
-                          quantity: 3,
-                          vat: 0.19,
-                          unitPrice: 5.99,
-                        ),
-                        InvoiceItem(
-                          description: 'Water',
-                          date: DateTime.now(),
-                          quantity: 8,
-                          vat: 0.19,
-                          unitPrice: 0.99,
-                        ),
-                        InvoiceItem(
-                          description: 'Orange',
-                          date: DateTime.now(),
-                          quantity: 3,
-                          vat: 0.19,
-                          unitPrice: 2.99,
-                        ),
-                        InvoiceItem(
-                          description: 'Apple',
-                          date: DateTime.now(),
-                          quantity: 8,
-                          vat: 0.19,
-                          unitPrice: 3.99,
-                        ),
-                        InvoiceItem(
-                          description: 'Mango',
-                          date: DateTime.now(),
+                          description: 'IPhone 13 Pro Max',
                           quantity: 1,
-                          vat: 0.19,
-                          unitPrice: 1.59,
+                          gst: 19,
+                          unitPrice: 120000,
+                          priceInWords:NumberToWord().convert('en-in',120000)
                         ),
                         InvoiceItem(
-                          description: 'Blue Berries',
-                          date: DateTime.now(),
-                          quantity: 5,
-                          vat: 0.19,
-                          unitPrice: 0.99,
-                        ),
-                        InvoiceItem(
-                          description: 'Lemon',
-                          date: DateTime.now(),
-                          quantity: 4,
-                          vat: 0.19,
-                          unitPrice: 1.29,
+                            description: 'IPhone 13 Pro Max',
+                            quantity: 2,
+                            gst: 19,
+                            unitPrice: 1200,
+                            priceInWords:NumberToWord().convert('en-in',1200)
                         ),
                       ],
                     );
 
                     final pdfFile = await PdfInvoiceApi.generate(invoice);
-
                     PdfApi.openFile(pdfFile);
+                    PdfApi.uploadFile(pdfFile);
+                    // PdfApi.saveDocument(pdf: pdfFile, name: 'sree');
+
                   },
                 ),
               ],
@@ -117,4 +97,6 @@ class _PdfPageState extends State<PdfPage> {
           ),
         ),
       );
+
+
 }

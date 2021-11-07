@@ -1,9 +1,13 @@
-class Customer {
+class BillCustomer {
   final String name;
-  final String address;
+  final String? address;
+  final String mobile;
+  final String? mail;
 
-  const Customer({
+  const BillCustomer({
     required this.name,
-    required this.address,
+    required this.mobile,
+    this.address,
+    this.mail
   });
 }

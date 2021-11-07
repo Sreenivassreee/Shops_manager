@@ -1,6 +1,7 @@
 
 import 'dart:io';
 
+import 'package:intl/intl.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart';
 
@@ -13,6 +14,7 @@ import 'package:shops_manager/pdf/utils.dart';
 
 class PdfInvoiceApi {
   static Future<File> generate(Invoice invoice) async {
+
     final pdf = Document();
 
     pdf.addPage(MultiPage(
@@ -60,11 +62,13 @@ class PdfInvoiceApi {
         ],
       );
 
-  static Widget buildCustomerAddress(Customer customer) => Column(
+  static Widget buildCustomerAddress(BillCustomer customer) => Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(customer.name, style: TextStyle(fontWeight: FontWeight.bold)),
-          Text(customer.address),
+          Text(customer.mobile),
+          Text(customer.mail??""),
+          Text(customer.address??""),
         ],
       );
 
@@ -118,32 +122,35 @@ class PdfInvoiceApi {
 
   static Widget buildInvoice(Invoice invoice) {
     final headers = [
-      'Description',
-      'Date',
+
+      'Item Name',
       'Quantity',
       'Unit Price',
-      'VAT',
+      'GST',
       'Total'
     ];
     final data = invoice.items.map((item) {
-      final total = item.unitPrice * item.quantity * (1 + item.vat);
+      final total = item.unitPrice * item.quantity;
+      print(total);
 
       return [
+
         item.description,
-        Utils.formatDate(item.date),
+        // Utils.formatDate(item.date),
         '${item.quantity}',
-        '\$ ${item.unitPrice}',
-        '${item.vat} %',
-        '\$ ${total.toStringAsFixed(2)}',
+        'Rs ${item.unitPrice}',
+        '${item.gst} %',
+        'Rs ${total.toStringAsFixed(2)}',
       ];
     }).toList();
 
     return Table.fromTextArray(
+
       headers: headers,
       data: data,
       border: null,
-      headerStyle: TextStyle(fontWeight: FontWeight.bold),
-      headerDecoration: BoxDecoration(color:PdfColors.grey300),
+      headerStyle: TextStyle(fontWeight: FontWeight.bold,color: PdfColors.white),
+      headerDecoration: BoxDecoration(color:PdfColors.purple700),
       cellHeight: 30,
       cellAlignments: {
         0: Alignment.centerLeft,
@@ -158,35 +165,67 @@ class PdfInvoiceApi {
 
   static Widget buildTotal(Invoice invoice) {
     final netTotal = invoice.items
-        .map((item) => item.unitPrice * item.quantity)
+        .map((item) => item.unitPrice)
         .reduce((item1, item2) => item1 + item2);
-    final vatPercent = invoice.items.first.vat;
-    final vat = netTotal * vatPercent;
-    final total = netTotal + vat;
+    final vatPercent = invoice.items.first.gst;
+    // final gst = netTotal * vatPercent;
+    final total = netTotal ;
 
     return Container(
       alignment: Alignment.centerRight,
       child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Spacer(flex: 6),
+
+          Expanded(
+            flex: 4,
+       child: Container(
+            padding: EdgeInsets.all(10),
+            color: PdfColors.grey200,
+
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'invoice amount in words'.toUpperCase(),
+                  style: TextStyle(
+                    fontSize: 13,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+
+                SizedBox(height: 3.0 * PdfPageFormat.mm),
+
+                  Text(invoice.items.first.priceInWords.toUpperCase()+"  Rupees only".toUpperCase()),
+
+
+
+                SizedBox(height: 2.0 * PdfPageFormat.mm),
+
+
+              ],
+            ),
+       ),
+          ),
+          Spacer(flex: 2),
           Expanded(
             flex: 4,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                // buildText(
+                //   title: 'Net total',
+                //   value: Utils.formatPrice(netTotal),
+                //   unite: true,
+                // ),
+                // buildText(
+                //   title: 'Vat ${vatPercent * 100} %',
+                //   value: Utils.formatPrice(gst),
+                //   unite: true,
+                // ),
+                // Divider(),
                 buildText(
-                  title: 'Net total',
-                  value: Utils.formatPrice(netTotal),
-                  unite: true,
-                ),
-                buildText(
-                  title: 'Vat ${vatPercent * 100} %',
-                  value: Utils.formatPrice(vat),
-                  unite: true,
-                ),
-                Divider(),
-                buildText(
-                  title: 'Total amount due',
+                  title: 'Total',
                   titleStyle: TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.bold,
@@ -213,7 +252,7 @@ class PdfInvoiceApi {
           SizedBox(height: 2.0 * PdfPageFormat.mm),
           buildSimpleText(title: 'Address', value: invoice.supplier.address),
           SizedBox(height: 1.0 * PdfPageFormat.mm),
-          buildSimpleText(title: 'Paypal', value: invoice.supplier.paymentInfo),
+          buildSimpleText(title: "", value: invoice.supplier.paymentInfo),
         ],
       );
 

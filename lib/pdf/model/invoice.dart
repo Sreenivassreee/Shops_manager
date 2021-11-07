@@ -7,7 +7,7 @@ import 'package:shops_manager/pdf/model/supplier.dart';
 class Invoice {
   final InvoiceInfo info;
   final Supplier supplier;
-  final Customer customer;
+  final BillCustomer customer;
   final List<InvoiceItem> items;
 
   const Invoice({
@@ -34,16 +34,17 @@ class InvoiceInfo {
 
 class InvoiceItem {
   final String description;
-  final DateTime date;
+
   final int quantity;
-  final double vat;
+  final double gst;
   final double unitPrice;
+  final String priceInWords;
 
   const InvoiceItem({
     required this.description,
-    required this.date,
     required this.quantity,
-    required this.vat,
+    required this.priceInWords,
+    required this.gst,
     required this.unitPrice,
   });
 }

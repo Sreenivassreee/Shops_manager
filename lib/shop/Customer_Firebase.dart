@@ -1,4 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:number_to_words/number_to_words.dart';
+import 'package:shops_manager/pdf/api/pdf_api.dart';
+import 'package:shops_manager/pdf/api/pdf_invoice_api.dart';
+import 'package:shops_manager/pdf/model/customer.dart';
+import 'package:shops_manager/pdf/model/invoice.dart';
+import 'package:shops_manager/pdf/model/supplier.dart';
 import 'package:shops_manager/shop/models/cus.dart';
 
 class CFireBase {
@@ -86,7 +92,16 @@ class CFireBase {
                   }
                 ])
               }, SetOptions(merge: true)).then((value) async {
-                // generateBill(){}.then((value) {});
+                await GenerateBill( customer:customer,
+                    id:id,
+                    toalPrice:toalPrice,
+                    quantity:quantity,
+                    paymentMode:paymentMode,
+                    customerSellingPrice:customerSellingPrice,
+                    internalSellingPrice:internalSellingPrice,
+                    documentSnapshot:documentSnapshot).then((v) async =>{
+                      print("[CustomerFirebse 103 Value]"+ v.toString()),
+                      if (v.toString().length>=20){
                 await AfterSellingUpdateQuantity(
                         id: id,
                         sellingQuantity: quantity,
@@ -97,12 +112,19 @@ class CFireBase {
                     .then((value) => {
                           if (value == "Done")
                             {
-                              status = "TransactionCompleted",
+                              status=v
                             }
                           else
                             {status = value}
-                        });
+                        }),
+              }else{
+                        status="Error Uploading the pdf"
+                      }
+
+                });
+
               });
+
             } else {
               //print("Here");
               status = "Required Stock Not Available";
@@ -180,6 +202,73 @@ class CFireBase {
       status = "Error";
       return status;
     }
+  }
+  Future<String> GenerateBill({
+    customer,
+      id,
+      toalPrice,
+      quantity,
+      paymentMode,
+      customerSellingPrice,
+      internalSellingPrice,documentSnapshot}) async {
+    var status="";
+
+    final date = DateTime.now();
+    final dueDate = date.add(Duration(days: 7));
+
+    var productModel = documentSnapshot['product_model'] ?? "";
+    var productRam = documentSnapshot['product_ram'] ?? "0";
+    var productStorage = documentSnapshot['product_storage'] ?? "0";
+    var productPrice = documentSnapshot['product_price'] ?? "None";
+    var productQuantity = documentSnapshot['product_quantity'] ?? "0";
+    var productBrand = documentSnapshot['product_brand'] ?? "0";
+    try{
+
+    final invoice = Invoice(
+      supplier: Supplier(
+        name: 'Shop Name',
+        address: 'Shop address',
+        paymentInfo: 'Thank you for shopping',
+      ),
+      customer: BillCustomer(
+          mail: customer.mail,
+          mobile:customer.mobile,
+          name: customer.name,
+          address:customer.address,
+      ),
+      info: InvoiceInfo(
+        date: date,
+        dueDate: dueDate,
+        description: 'My description...',
+        number: '${DateTime.now().year}',
+      ),
+      items: [
+        InvoiceItem(
+            description: productBrand+" "+productModel+" "+productRam+" "+ productStorage+" ",
+            quantity: int.parse(quantity),
+            gst: 19,
+            unitPrice: double.parse(customerSellingPrice),
+            priceInWords:NumberToWord().convert('en-in',int.parse(customerSellingPrice))
+        ),
+      ],
+    );
+
+    final pdfFile = await PdfInvoiceApi.generate(invoice);
+    await PdfApi.uploadFile(pdfFile,path:"shop/${date}/${customer.mobile}/${id}/${ productBrand+" "+productModel+" "+productRam+" "+ productStorage+" "}.pdf",date:date,CustomerMobile:customer.mobile).then((value) => {
+
+      if (value!="Error"){
+        status="Uploaded",
+        status=value,
+        // PdfApi.openFile(pdfFile)
+      }else{
+        status="[Upload File ]Error]"
+      }
+    });
+}catch(e){
+  print("[Customer Firebase Error 253] " +e.toString());
+  status="Error";
+}
+return status;
   }
 }
       //  //print(productModel +

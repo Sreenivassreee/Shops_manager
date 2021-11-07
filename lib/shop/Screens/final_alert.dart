@@ -41,6 +41,7 @@ class _FinalAlertState extends State<FinalAlert> {
   var cFire = CFireBase();
   final formatCurrency =
       NumberFormat.simpleCurrency(locale: Platform.localeName, name: 'INR');
+  var transactionStatus="";
   @override
   void initState() {
     productModel = widget.eachProduct['product_model'] ?? "";
@@ -73,7 +74,7 @@ class _FinalAlertState extends State<FinalAlert> {
                   customerSellingPrice: widget.customerSellingPrice,
                   internalSellingPrice: widget.internalSellingPrice)
               .then((v) => {
-                    print(v),
+                    print("[TransactionCompleted]  "+v),
                     if (v == "TransactionCompleted")
                       {
                         Navigator.push(
@@ -82,7 +83,18 @@ class _FinalAlertState extends State<FinalAlert> {
                             builder: (BuildContext context) => Homepage(),
                           ),
                         )
-                      }
+                      }else if(v.length>=20){
+                      print("HERE"),
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (BuildContext context) => Homepage(),
+                        ),
+                      )
+                    }
+                    else if (v=="Error Uploading the pdf"){
+                      print("[Final Alert]"+v)
+                    }
                     else
                       {
                         print("E is"),
