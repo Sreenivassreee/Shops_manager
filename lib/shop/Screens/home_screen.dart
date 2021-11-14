@@ -36,6 +36,11 @@ class _HomepageState extends State<Homepage> {
     SharedPreferences p = await SharedPreferences.getInstance();
     setState(() {
         shopName = p.getString('shop-name');
+        productsStream = FirebaseFirestore.instance
+            .collection('shops')
+            .doc(shopName)
+            .collection('products')
+            .snapshots();
     });
     print("[Homepage Shop Name]" +shopName);
     return true;
@@ -43,11 +48,7 @@ class _HomepageState extends State<Homepage> {
 
   @override
   Widget build(BuildContext context) {
-    productsStream = FirebaseFirestore.instance
-        .collection('shops')
-        .doc(shopName)
-        .collection('products')
-        .snapshots();
+
     return Scaffold(
       appBar: app_bar(title: 'Stock'),
       bottomSheet: Container(

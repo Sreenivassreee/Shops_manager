@@ -130,7 +130,7 @@ class _SaleProductSucessState extends State<SaleProductSucess> {
                           tap: () async {
                             print("WhatsAp");
                             await launch(
-                                "https://wa.me/+91${widget.customer?.mobile}?text=${billMessageToCustomer}");
+                                "https://wa.me/+91${widget.customer?.mobile}?text=$billMessageToCustomer");
                           }),
                       SucessInfoCard(
                         icon: Icons.share,

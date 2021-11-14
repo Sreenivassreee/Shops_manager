@@ -30,6 +30,8 @@ class _MyAppState extends State<MyApp> {
   var shopName;
   var managerName;
   var date;
+  var isAdminLogin;
+  var admin;
   CollectionReference users = FirebaseFirestore.instance.collection('users');
 
   @override
@@ -39,6 +41,7 @@ class _MyAppState extends State<MyApp> {
     print("[Init]");
     loginCheck();
     super.initState();
+    isAdminLogin = false;
   }
 
   loginCheck() async {
@@ -50,7 +53,12 @@ class _MyAppState extends State<MyApp> {
     print("[shopName]" + shopName.toString());
     managerName = p.getString('manager-name');
     print("[managerName]" + managerName.toString());
-    if (shopName != null && managerName != null) {
+    admin = p.getBool('is-admin');
+    if (admin == true && shopName != null && managerName != null) {
+      setState(() {
+        isAdminLogin = true;
+      });
+    } else if (shopName != null && managerName != null) {
       try {
         await users
             .doc(shopName)
@@ -63,32 +71,32 @@ class _MyAppState extends State<MyApp> {
           (DocumentSnapshot documentSnapshot) async {
             if (documentSnapshot.exists) {
               var temp = documentSnapshot;
-              var todayLogin=temp['_isLogin'];
-              if (todayLogin==null || todayLogin==false) {
+              var todayLogin = temp['_isLogin'];
+              if (todayLogin == null || todayLogin == false) {
                 print("[_isLogin]");
                 setState(() {
                   isLogin = false;
                 });
-              } else if(todayLogin){
+              } else if (todayLogin) {
                 await users.doc(shopName).get().then((v) {
-                  if (v['_is_active']==true) {
+                  if (v['_is_active'] == true) {
                     print("['_is_active]");
                     setState(() {
                       isLogin = true;
                       isLoading = false;
                     });
-                  }else{
+                  } else {
                     show(context, "You are in blocking list");
                     print("[You are in blocking list]");
                     setState(() {
-                      isLogin=false;
+                      isLogin = false;
                     });
                   }
                 });
               }
-            }else{
+            } else {
               setState(() {
-                isLogin=false;
+                isLogin = false;
               });
             }
           },
@@ -118,52 +126,43 @@ class _MyAppState extends State<MyApp> {
     return FutureBuilder(
       future: Init.instance.initialize(),
       builder: (context, AsyncSnapshot snapshot) {
-        if (isLoading &&
-            (snapshot.connectionState == ConnectionState.waiting)) {
-          return MaterialApp(debugShowCheckedModeBanner: false, home: Splash());
-        } else {
-          return MaterialApp(
-              debugShowCheckedModeBanner: false,
-              title: 'Flutter Demo',
-              theme: ThemeData(
-                  fontFamily: 'arial',
-                  primarySwatch: Colors.red,
-                  cardColor: Colors.white,
-                  scaffoldBackgroundColor: Colors.indigo[50],
-                  // cardColor: Colors.grey[850],
+        return MaterialApp(
+          debugShowCheckedModeBanner: false,
+          title: 'Flutter Demo',
+          theme: ThemeData(
+              fontFamily: 'arial',
+              primarySwatch: Colors.red,
+              cardColor: Colors.white,
+              scaffoldBackgroundColor: Colors.indigo[50],
+              // cardColor: Colors.grey[850],
 //        cardColor: Color(0xFF171332),
-                  primaryColor: Colors.black,
-                  accentColor: Colors.red,
-                  // canvasColor: Colors.grey[50],
-                  applyElevationOverlayColor: true,
-                  disabledColor: Colors.grey,
-                  dividerColor: Colors.white,
-                  cursorColor: Colors.indigo[50],
-                  canvasColor: Colors.red,
-                  // bottomAppBarColor: Colors.indigo[50],
-                  bottomSheetTheme: BottomSheetThemeData(
-                    backgroundColor: Colors.transparent,
-                  ),
-                  appBarTheme: AppBarTheme(
-                    color: Colors.indigo[50],
-                    centerTitle: false,
-                  )
+              primaryColor: Colors.black,
+              accentColor: Colors.red,
+              // canvasColor: Colors.grey[50],
+              applyElevationOverlayColor: true,
+              disabledColor: Colors.grey,
+              dividerColor: Colors.white,
+              cursorColor: Colors.indigo[50],
+              canvasColor: Colors.red,
+              // bottomAppBarColor: Colors.indigo[50],
+              bottomSheetTheme: BottomSheetThemeData(
+                backgroundColor: Colors.transparent,
+              ),
+              appBarTheme: AppBarTheme(
+                color: Colors.indigo[50],
+                centerTitle: false,
+              )
 
-                  // appBarTheme: AppBarTheme(
-                  //   color: Colors.red,
-
-                  //   elevation: 0.0,
-                  // accentColor: Colors.yellow,
-                  // primaryColor: Colors.red,
-                  // scaffoldBackgroundColor: Colors.yellow[200],
-                  // buttonColor: Colors.amber,
-                  // dialogBackgroundColor: Colors.yellow,
-                  // ),
-                  ),
-              home: (isLogin != true || isLogin == null)
-                  ? LoginPage()
-                  : Homepage());
-        }
+              ),
+          home: (isAdminLogin == true)
+              ? AdminHomepage()
+              : (isLoading &&
+                      (snapshot.connectionState == ConnectionState.waiting)
+                  ? Splash()
+                  : (isLogin != true || isLogin == null)
+                      ? LoginPage()
+                      : Homepage()),
+        );
       },
     );
   }

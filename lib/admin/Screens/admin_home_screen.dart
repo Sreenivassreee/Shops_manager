@@ -1,4 +1,7 @@
+import 'package:flutter/cupertino.dart';
 import 'package:shops_manager/export.dart';
+import 'package:shops_manager/shop/shared-pref/shop-shared-pref.dart';
+import 'package:shops_manager/widgets/global/cuperLoading.dart';
 
 class AdminHomepage extends StatefulWidget {
   const AdminHomepage({Key? key}) : super(key: key);
@@ -13,7 +16,17 @@ class _AdminHomepageState extends State<AdminHomepage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      floatingActionButton: FloatingActionButton(onPressed: () {
+        logout();
+        Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(
+                builder: (_) => LoginPage()),
+                (route) => false);
+      },
+      child: Icon(Icons.logout),),
       appBar: AppBar(
+
         automaticallyImplyLeading: false,
         elevation: 0,
         title: TitleText(
@@ -46,7 +59,7 @@ class _AdminHomepageState extends State<AdminHomepage> {
           }
 
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return Text("Loading");
+            return cuperLoading();
           }
           if (snapshot.hasData) {
             // print(snapshot.data?.docs[0]['products'][0]['product_ram']);
