@@ -23,7 +23,6 @@ class _LoginPageState extends State<LoginPage> {
   void initState() {
     super.initState();
   }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(

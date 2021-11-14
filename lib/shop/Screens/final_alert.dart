@@ -1,7 +1,15 @@
 import 'dart:io';
+import 'dart:math';
 
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:intl/intl.dart';
+import 'package:otp_screen/otp_screen.dart';
+
 import 'package:shops_manager/shop/Customer_Firebase.dart';
+import 'package:shops_manager/widgets/global/sale_product_sucess.dart';
+
+import 'package:shops_manager/widgets/global/toast.dart';
 
 import '/export.dart';
 
@@ -41,9 +49,14 @@ class _FinalAlertState extends State<FinalAlert> {
   var cFire = CFireBase();
   final formatCurrency =
       NumberFormat.simpleCurrency(locale: Platform.localeName, name: 'INR');
-  var transactionStatus="";
+  var transactionStatus = "";
+  var code = Random().nextInt(999);
+  var userCode = TextEditingController();
+  bool isLoading = false;
+
   @override
   void initState() {
+    print("[Code]" + code.toString());
     productModel = widget.eachProduct['product_model'] ?? "";
     productRam = widget.eachProduct['product_ram'] ?? "0";
     productStorage = widget.eachProduct['product_storage'] ?? "0";
@@ -60,135 +73,124 @@ class _FinalAlertState extends State<FinalAlert> {
   }
 
   @override
+  void dispose() {
+    setState(() {
+      isLoading = false;
+    });
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
-      bottomNavigationBar: btn(
-        btnTitle: "PAID",
-        action: () async {
-          await cFire.SellProduct(
-                  customer: widget.customer,
-                  id: widget.id,
-                  toalPrice: price.toString(),
-                  quantity: widget.quantity.toString(),
-                  paymentMode: widget.paymentMode,
-                  customerSellingPrice: widget.customerSellingPrice,
-                  internalSellingPrice: widget.internalSellingPrice)
-              .then((v) => {
-                    print("[TransactionCompleted]  "+v),
-                    if (v == "TransactionCompleted")
-                      {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (BuildContext context) => Homepage(),
-                          ),
-                        )
-                      }else if(v.length>=20){
-                      print("HERE"),
-                      Navigator.push(
+        backgroundColor: Colors.white,
+        // bottomNavigationBar: btn(
+        //   btnTitle: "PAID",
+        //   action: () async {
+        //     // Navigator.push(
+        //     //   context,
+        //     //   MaterialPageRoute(
+        //     //     builder: (BuildContext context) => Homepage(),
+        //     //   ),
+        //     // );
+        //   },
+        // ),
+
+        body: (!isLoading)
+            ? Container(
+                child: OtpScreen(
+                  title: code.toString(),
+                  subTitle: productBrand.toUpperCase() +
+                      "  " +
+                      toBeginningOfSentenceCase(productModel) +
+                      " " +
+                      productRam +
+                      "GB" +
+                      " " +
+                      productStorage +
+                      "GB" +
+                      "\n\n" +
+                      "  " +
+                      price +
+                      " /- ",
+                  otpLength: 3,
+                  validateOtp: validateOtp,
+                  routeCallback: moveToNextScreen,
+                  titleColor: Colors.black,
+                  themeColor: Colors.black,
+                ),
+              )
+            : Center(
+                child: CachedNetworkImage(
+                  imageUrl:
+                      "https://cdn.dribbble.com/users/733202/screenshots/15793600/media/e5a416d19d4c015287dfcada0040e5fb.gif",
+                  progressIndicatorBuilder: (context, url, downloadProgress) =>
+                      CircularProgressIndicator(
+                          value: downloadProgress.progress),
+                  errorWidget: (context, url, error) => Icon(Icons.error),
+                ),
+              )
+        // ],
+        // ),
+        //       ),
+        //     ],
+        //   ),
+        );
+  }
+
+  Future<String> validateOtp(String otp) async {
+    if (otp == code.toString()) {
+      setState(() {
+        isLoading = true;
+      });
+
+      await cFire.SellProduct(
+              customer: widget.customer,
+              id: widget.id,
+              toalPrice: price.toString(),
+              quantity: widget.quantity.toString(),
+              paymentMode: widget.paymentMode,
+              customerSellingPrice: widget.customerSellingPrice,
+              internalSellingPrice: widget.internalSellingPrice)
+          .then((v) => {
+                print("[TransactionCompleted]" + v),
+                if (v.length >= 50)
+                  {
+                    print("HERE"),
+                    Navigator.pushAndRemoveUntil(
                         context,
                         MaterialPageRoute(
-                          builder: (BuildContext context) => Homepage(),
-                        ),
-                      )
-                    }
-                    else if (v=="Error Uploading the pdf"){
-                      print("[Final Alert]"+v)
-                    }
-                    else
-                      {
-                        print("E is"),
-                        print(v),
-                      }
-                  });
-          // Navigator.push(
-          //   context,
-          //   MaterialPageRoute(
-          //     builder: (BuildContext context) => Homepage(),
-          //   ),
-          // );
-        },
-      ),
-      body: ListView(
-        children: [
-          TitleText(
-            title: "Final Alert",
-          ),
-          Padding(
-            padding: const EdgeInsets.all(10.0),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Center(
-                  child: Text(
-                    productBrand.toUpperCase() +
-                        "  " +
-                        toBeginningOfSentenceCase(productModel) +
-                        " " +
-                        productRam +
-                        "GB" +
-                        " " +
-                        productStorage +
-                        "GB",
-                    style: TextStyle(fontSize: 20),
-                  ),
-                ),
-                SizedBox(height: 20),
-                Center(
-                  child: Card(
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Column(
-                        children: [
-                          Text(
-                            "Total Amount ",
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              fontSize: 20,
-                            ),
-                          ),
-                          SizedBox(height: 10),
-                          Text(
-                            price,
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              fontSize: 30,
-                              color: Colors.green,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-                SizedBox(
-                  height: 20,
-                ),
-                Center(
-                  child: Text(
-                    "1234",
-                    textAlign: TextAlign.center,
-                    style: TextStyle(fontSize: 40),
-                  ),
-                ),
-                Container(
-                  padding: EdgeInsets.fromLTRB(10, 10, 10, 0),
-                  child: TextField(
-                    keyboardType: TextInputType.number,
-                    // controller: passwordController,
-                    decoration: InputDecoration(
-                      border: OutlineInputBorder(),
-                      labelText: 'Code',
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
+                            builder: (_) => SaleProductSucess(
+                                billURL: v,
+                                customer: widget.customer,
+                                isSucess: true)),
+                        (route) => false)
+                  }
+                else
+                  {
+                    Navigator.pushAndRemoveUntil(
+                        context,
+                        MaterialPageRoute(
+                            builder: (_) => SaleProductSucess(
+                                errorMessage: v, isSucess: false)),
+                        (route) => false),
+                    print("E is"),
+                    print(v),
+                  }
+              });
+      return "YES";
+    } else {
+      setState(() {
+        isLoading = false;
+      });
+      return "Envalid Code";
+    }
+  }
+
+  // action to be performed after OTP validation is success
+  void moveToNextScreen(context) {
+    print("MOVE");
+    // Navigator.push(context, MaterialPageRoute(
+    //     builder: (context) => SuccessfulOtpScreen()));
   }
 }

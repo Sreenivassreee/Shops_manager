@@ -56,75 +56,86 @@ class CFireBase {
         if (isDeleted == false) {
           if (int.parse(productQuantity) > 0) {
             if (int.parse(productQuantity) >= int.parse(quantity)) {
-              await shops.doc("shop").collection('sells').doc("test").set({
-                customer.mobile: FieldValue.arrayUnion([
-                  {
-                    "customer_details": {
-                      "name": customer.name,
-                      "mobile": customer.mobile,
-                      "mail": customer.mail,
-                      "address": customer.address,
-                    },
-                    "buy_products": {
-                      "now_mrp_selling_price": customerSellingPrice,
-                      "now_payment_mode": paymentMode,
-                      "now_total_price": toalPrice,
-                      "now_sell_by_manager": "sell_by_manager",
-                      "now_time_stamp": DateTime.now(),
-                      "now_storage": productStorage,
-                      "now_sell_by_shop": "shop",
-                      "now_quantity": quantity,
-                      "now_model": productModel,
-                      "now__id": id,
-                      "now_bill_url": "bill_url",
-                      "now_brand": productBrand,
-                      "now_ram": productRam,
-                      "now_internal_selling_price": internalSellingPrice
-                    },
-                    "_past_product_details": {
-                      "_past_quantity": productQuantity,
-                      "_past_last_updated": lastUpdated,
-                      "_past_model": productModel,
-                      "_past_storage": productStorage,
-                      "_past_brand": productBrand,
-                      "_past_ram": productRam,
-                    },
-                  }
-                ])
-              }, SetOptions(merge: true)).then((value) async {
-                await GenerateBill( customer:customer,
-                    id:id,
-                    toalPrice:toalPrice,
-                    quantity:quantity,
-                    paymentMode:paymentMode,
-                    customerSellingPrice:customerSellingPrice,
-                    internalSellingPrice:internalSellingPrice,
-                    documentSnapshot:documentSnapshot).then((v) async =>{
-                      print("[CustomerFirebse 103 Value]"+ v.toString()),
-                      if (v.toString().length>=20){
-                await AfterSellingUpdateQuantity(
-                        id: id,
-                        sellingQuantity: quantity,
-                        productQuantity: productQuantity,
-                        quantity:
-                            int.parse(productQuantity) - int.parse(quantity),
-                        customer: customer)
-                    .then((value) => {
-                          if (value == "Done")
-                            {
-                              status=v
-                            }
-                          else
-                            {status = value}
-                        }),
-              }else{
-                        status="Error Uploading the pdf"
-                      }
-
-                });
-
-              });
-
+              await GenerateBill(
+                      customer: customer,
+                      id: id,
+                      toalPrice: toalPrice,
+                      quantity: quantity,
+                      paymentMode: paymentMode,
+                      customerSellingPrice: customerSellingPrice,
+                      internalSellingPrice: internalSellingPrice,
+                      documentSnapshot: documentSnapshot)
+                  .then((generateBillReturn) async => {
+                        print("[CustomerFirebse 103 Value]" +
+                            generateBillReturn.toString()),
+                        if (generateBillReturn.toString().length >= 20)
+                          {
+                            await AfterSellingUpdateQuantity(
+                                    id: id,
+                                    sellingQuantity: quantity,
+                                    productQuantity: productQuantity,
+                                    quantity: int.parse(productQuantity) -
+                                        int.parse(quantity),
+                                    customer: customer)
+                                .then(
+                              (afterSellingUpdateQuantityReturn) async => {
+                                if (afterSellingUpdateQuantityReturn == "Done")
+                                  {
+                                    status = "AfterSellingUpdate",
+                                    await shops
+                                        .doc("shop")
+                                        .collection('sells')
+                                        .doc("test2")
+                                        .set({
+                                      customer.mobile: FieldValue.arrayUnion([
+                                        {
+                                          "customer_details": {
+                                            "name": customer.name,
+                                            "mobile": customer.mobile,
+                                            "mail": customer.mail,
+                                            "address": customer.address,
+                                          },
+                                          "buy_products": {
+                                            "now_mrp_selling_price":
+                                                customerSellingPrice,
+                                            "now_payment_mode": paymentMode,
+                                            "now_total_price": toalPrice,
+                                            "now_sell_by_manager":
+                                                "sell_by_manager",
+                                            "now_time_stamp": DateTime.now(),
+                                            "now_storage": productStorage,
+                                            "now_sell_by_shop": "shop",
+                                            "now_quantity": quantity,
+                                            "now_model": productModel,
+                                            "now__id": id,
+                                            "now_bill_url": generateBillReturn,
+                                            "now_brand": productBrand,
+                                            "now_ram": productRam,
+                                            "now_internal_selling_price":
+                                                internalSellingPrice
+                                          },
+                                          "_past_product_details": {
+                                            "_past_quantity": productQuantity,
+                                            "_past_last_updated": lastUpdated,
+                                            "_past_model": productModel,
+                                            "_past_storage": productStorage,
+                                            "_past_brand": productBrand,
+                                            "_past_ram": productRam,
+                                          },
+                                        }
+                                      ])
+                                    }, SetOptions(merge: true)).then(
+                                      (value) => {status = generateBillReturn},
+                                    )
+                                  }
+                                else
+                                  {status = afterSellingUpdateQuantityReturn}
+                              },
+                            )
+                          }
+                        else
+                          {status = "Error Uploading the pdf"}
+                      });
             } else {
               //print("Here");
               status = "Required Stock Not Available";
@@ -139,8 +150,9 @@ class CFireBase {
         status = "Invalid Product Id";
       }
     });
+    print("{Main Status}"+status);
+
     return status;
-    //print(status);
   }
 
   sendError(Error) {
@@ -203,15 +215,29 @@ class CFireBase {
       return status;
     }
   }
-  Future<String> GenerateBill({
-    customer,
+
+  UpdateTheUrl({url, customerMobile}) async {
+    await shops.doc("shop").collection('sells').doc("test").update({
+      customerMobile: FieldValue.arrayUnion([
+        {
+          "buy_products": {
+            "now_bill_url": url,
+          },
+        }
+      ])
+    });
+  }
+
+  Future<String> GenerateBill(
+      {customer,
       id,
       toalPrice,
       quantity,
       paymentMode,
       customerSellingPrice,
-      internalSellingPrice,documentSnapshot}) async {
-    var status="";
+      internalSellingPrice,
+      documentSnapshot}) async {
+    var status = "";
 
     final date = DateTime.now();
     final dueDate = date.add(Duration(days: 7));
@@ -222,69 +248,80 @@ class CFireBase {
     var productPrice = documentSnapshot['product_price'] ?? "None";
     var productQuantity = documentSnapshot['product_quantity'] ?? "0";
     var productBrand = documentSnapshot['product_brand'] ?? "0";
-    try{
-
-    final invoice = Invoice(
-      supplier: Supplier(
-        name: 'Shop Name',
-        address: 'Shop address',
-        paymentInfo: 'Thank you for shopping',
-      ),
-      customer: BillCustomer(
-          mail: customer.mail,
-          mobile:customer.mobile,
-          name: customer.name,
-          address:customer.address,
-      ),
-      info: InvoiceInfo(
-        date: date,
-        dueDate: dueDate,
-        description: 'My description...',
-        number: '${DateTime.now().year}',
-      ),
-      items: [
-        InvoiceItem(
-            description: productBrand+" "+productModel+" "+productRam+" "+ productStorage+" ",
-            quantity: int.parse(quantity),
-            gst: 19,
-            unitPrice: double.parse(customerSellingPrice),
-            priceInWords:NumberToWord().convert('en-in',int.parse(customerSellingPrice))
+    try {
+      final invoice = Invoice(
+        supplier: Supplier(
+          name: 'Shop Name',
+          address: 'Shop address',
+          paymentInfo: 'Thank you for shopping',
         ),
-      ],
-    );
+        customer: BillCustomer(
+          mail: customer.mail,
+          mobile: customer.mobile,
+          name: customer.name,
+          address: customer.address,
+        ),
+        info: InvoiceInfo(
+          date: date,
+          dueDate: dueDate,
+          description: 'My description...',
+          number: '${DateTime.now().year}',
+        ),
+        items: [
+          InvoiceItem(
+              description: productBrand +
+                  " " +
+                  productModel +
+                  " " +
+                  productRam +
+                  " " +
+                  productStorage +
+                  " ",
+              quantity: int.parse(quantity),
+              gst: 19,
+              unitPrice: double.parse(customerSellingPrice),
+              priceInWords: NumberToWord()
+                  .convert('en-in', int.parse(customerSellingPrice))),
+        ],
+      );
 
-    final pdfFile = await PdfInvoiceApi.generate(invoice);
-    await PdfApi.uploadFile(pdfFile,path:"shop/${date}/${customer.mobile}/${id}/${ productBrand+" "+productModel+" "+productRam+" "+ productStorage+" "}.pdf",date:date,CustomerMobile:customer.mobile).then((value) => {
-
-      if (value!="Error"){
-        status="Uploaded",
-        status=value,
-        // PdfApi.openFile(pdfFile)
-      }else{
-        status="[Upload File ]Error]"
-      }
-    });
-}catch(e){
-  print("[Customer Firebase Error 253] " +e.toString());
-  status="Error";
-}
-return status;
+      final pdfFile = await PdfInvoiceApi.generate(invoice);
+      await PdfApi.uploadFile(pdfFile,
+              path:
+                  "shop/${date}/${customer.mobile}/${id}/${productBrand + " " + productModel + " " + productRam + " " + productStorage + " "}.pdf",
+              date: date,
+              CustomerMobile: customer.mobile)
+          .then((value) => {
+                if (value != "Error")
+                  {
+                    status = "Uploaded",
+                    status = value,
+                    // PdfApi.openFile(pdfFile)
+                  }
+                else
+                  {status = "[Upload File ]Error]"}
+              });
+    } catch (e) {
+      print("[Customer Firebase Error 253] " + e.toString());
+      status = "Error";
+    }
+    return status;
   }
 }
-      //  //print(productModel +
-      //       productRam +
-      //       productStorage +
-      //       productPrice +
-      //       productQuantity +
-      //       productBrand);
 
+//  //print(productModel +
+//       productRam +
+//       productStorage +
+//       productPrice +
+//       productQuantity +
+//       productBrand);
 
-    //       await FirebaseFirestore.instance
-    //     .collection('shops')
-    //     .doc("shop")
-    //     .collection("sells")
-    //     .doc('2021-11-04')
-    //     .get()
-    //     .then((DocumentSnapshot document) {
-    //   //print(document['9505501046']);
-    // });
+//       await FirebaseFirestore.instance
+//     .collection('shops')
+//     .doc("shop")
+//     .collection("sells")
+//     .doc('2021-11-04')
+//     .get()
+//     .then((DocumentSnapshot document) {
+//   //print(document['9505501046']);
+// });
