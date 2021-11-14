@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:shops_manager/export.dart';
+import 'package:shops_manager/globalcode/date.dart';
 
 class Fire {
   CollectionReference users = FirebaseFirestore.instance.collection('users');
@@ -262,32 +263,38 @@ class Fire {
       return status;
     }
   }
+
+  setDailyLoginStatus({shopName, managerName}) async {
+    var date = getDate();
+    await users
+        .doc(shopName)
+        .collection(managerName)
+        .doc(managerName)
+        .collection('logins')
+        .doc(date)
+        .set({'_isLogin': true});
+  }
 }
-
-
-
-
 
 //  "products": FieldValue.arrayUnion([
 //             {
 
-        // }, SetOptions(merge: true)).then((value) => {status = "Done"});
+// }, SetOptions(merge: true)).then((value) => {status = "Done"});
 
-
-//addProductsCode 
-  // await shops
-        //     .doc(shopName)
-        //     .collection("products")
-        //     .doc(tempBrand.replaceAll(' ', '') +
-        //         tempPhoneModel.replaceAll(' ', '') +
-        //         tempRam.replaceAll(' ', '') +
-        //         tempStorage.replaceAll(' ', ''))
-        //     .set({
-        //   "product_brand": tempBrand,
-        //   "product_model": tempPhoneModel,
-        //   "product_ram": tempRam,
-        //   "product_storage": tempStorage,
-        //   "product_price": price.toString().trim(),
-        //   "product_quantity": quantity.toString().trim(),
-        //   "_last_updated": DateTime.now()
-        // }).then((value) => {status = "Done"});
+//addProductsCode
+// await shops
+//     .doc(shopName)
+//     .collection("products")
+//     .doc(tempBrand.replaceAll(' ', '') +
+//         tempPhoneModel.replaceAll(' ', '') +
+//         tempRam.replaceAll(' ', '') +
+//         tempStorage.replaceAll(' ', ''))
+//     .set({
+//   "product_brand": tempBrand,
+//   "product_model": tempPhoneModel,
+//   "product_ram": tempRam,
+//   "product_storage": tempStorage,
+//   "product_price": price.toString().trim(),
+//   "product_quantity": quantity.toString().trim(),
+//   "_last_updated": DateTime.now()
+// }).then((value) => {status = "Done"});

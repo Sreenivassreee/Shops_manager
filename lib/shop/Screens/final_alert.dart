@@ -52,10 +52,11 @@ class _FinalAlertState extends State<FinalAlert> {
   var transactionStatus = "";
   var code = Random().nextInt(999);
   var userCode = TextEditingController();
-  bool isLoading = false;
+  bool? isLoading;
 
   @override
   void initState() {
+    isLoading = false;
     print("[Code]" + code.toString());
     productModel = widget.eachProduct['product_model'] ?? "";
     productRam = widget.eachProduct['product_ram'] ?? "0";
@@ -74,10 +75,8 @@ class _FinalAlertState extends State<FinalAlert> {
 
   @override
   void dispose() {
-    setState(() {
-      isLoading = false;
-    });
     super.dispose();
+      isLoading = false;
   }
 
   @override
@@ -96,7 +95,7 @@ class _FinalAlertState extends State<FinalAlert> {
         //   },
         // ),
 
-        body: (!isLoading)
+        body: (!isLoading!)
             ? Container(
                 child: OtpScreen(
                   title: code.toString(),

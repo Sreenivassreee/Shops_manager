@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:open_file/open_file.dart';
 import 'package:share/share.dart';
 import 'package:shops_manager/export.dart';
 import 'package:shops_manager/shop/models/cus.dart';
@@ -129,13 +130,20 @@ class _SaleProductSucessState extends State<SaleProductSucess> {
                           tap: () async {
                             print("WhatsAp");
                             await launch(
-                                "https://wa.me/${widget.customer?.mobile}?text=${billMessageToCustomer}");
+                                "https://wa.me/+91${widget.customer?.mobile}?text=${billMessageToCustomer}");
                           }),
                       SucessInfoCard(
                         icon: Icons.share,
                         title: "Share",
                         tap: () {
                           Share.share(billMessageToCustomer ?? "");
+                        },
+                      ),
+                      SucessInfoCard(
+                        icon: Icons.share,
+                        title: "Open",
+                        tap: () async{
+                          await OpenFile.open(widget.billURL);
                         },
                       ),
                     ],
@@ -177,3 +185,4 @@ class _SaleProductSucessState extends State<SaleProductSucess> {
     );
   }
 }
+// await OpenFile.open(url);

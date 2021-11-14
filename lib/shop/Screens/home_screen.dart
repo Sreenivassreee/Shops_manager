@@ -1,10 +1,11 @@
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shops_manager/admin/Screens/admin_same_brand_products.dart';
 import 'package:shops_manager/export.dart';
+import 'package:shops_manager/shop/shared-pref/shop-shared-pref.dart';
+import 'package:shops_manager/widgets/global/toast.dart';
 
 class Homepage extends StatefulWidget {
-  var shopName;
-  var userName;
-  Homepage({Key? key, this.shopName, this.userName}) : super(key: key);
+  Homepage({Key? key}) : super(key: key);
 
   @override
   _HomepageState createState() => _HomepageState();
@@ -14,24 +15,39 @@ class _HomepageState extends State<Homepage> {
   int data = 21;
   var dataLength = 0;
   var shopsData;
-  var shopName = '';
+  var shopName;
   var brands = [];
   var temp = [];
   var eachBrandData = [];
   Stream<QuerySnapshot>? productsStream;
 
   @override
-  void initState() {
+  initState()  {
     super.initState();
-    productsStream = FirebaseFirestore.instance
-        .collection('shops')
-        .doc(widget.shopName ?? "shop")
-        .collection('products')
-        .snapshots();
+    getPref();
+    if(shopName==''){
+      show(context, "Something went wrong!");
+      logout();
+    }
+
+  }
+
+  Future<bool> getPref() async {
+    SharedPreferences p = await SharedPreferences.getInstance();
+    setState(() {
+        shopName = p.getString('shop-name');
+    });
+    print("[Homepage Shop Name]" +shopName);
+    return true;
   }
 
   @override
   Widget build(BuildContext context) {
+    productsStream = FirebaseFirestore.instance
+        .collection('shops')
+        .doc(shopName)
+        .collection('products')
+        .snapshots();
     return Scaffold(
       appBar: app_bar(title: 'Stock'),
       bottomSheet: Container(
@@ -46,8 +62,18 @@ class _HomepageState extends State<Homepage> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   tBtn(
-                    btnTitle: "TODAY EXCHANGES",
-                    action: () {},
+                    btnTitle: "logout",
+                    action: () {
+                      logout();
+                      Navigator.pushAndRemoveUntil(
+                        context,
+                        MaterialPageRoute(
+                          builder: (BuildContext context) =>
+                              LoginPage(),
+                        ),
+                        ModalRoute.withName(''),
+                      );
+                    },
                   ),
                   tBtn(
                     btnTitle: "ACCEPT EXCHANGE",

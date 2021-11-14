@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:shops_manager/admin/Screens/admin_home_screen.dart';
 import 'package:shops_manager/admin/firebase/fire.dart';
+import 'package:shops_manager/shop/shared-pref/shop-shared-pref.dart';
 
 import 'package:shops_manager/widgets/btn.dart';
 import 'package:shops_manager/widgets/title_text.dart';
@@ -19,14 +20,16 @@ class _LoginPageState extends State<LoginPage> {
   TextEditingController passwordController = TextEditingController();
   Fire fire = Fire();
   var error = '';
+  var isLoading=false;
   @override
   void initState() {
     super.initState();
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Padding(
+      body: isLoading ?Center(child: CircularProgressIndicator(),):Padding(
         padding: EdgeInsets.all(10),
         child: ListView(
           children: <Widget>[
@@ -81,6 +84,7 @@ class _LoginPageState extends State<LoginPage> {
                 action: () async {
                   setState(() {
                     error = '';
+                    isLoading=true;
                   });
                   // Direct Login
                   // Navigator.push(
@@ -96,6 +100,7 @@ class _LoginPageState extends State<LoginPage> {
                       userNameController.text.isEmpty ||
                       passwordController.text.isEmpty) {
                     setState(() {
+                      isLoading=false;
                       error = "Please provide valid Cretentials";
                     });
                   } else {
@@ -104,33 +109,47 @@ class _LoginPageState extends State<LoginPage> {
                             userName: userNameController.text,
                             password: passwordController.text)
                         .then((v) {
-                      if (v != Null) {
+                      if (v != null) {
                         if (v == 'admin') {
+                          setState(() {
+                            isLoading=false;
+                          });
                           Navigator.pushAndRemoveUntil(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (BuildContext context) =>
-                                      AdminHomepage()),
-                              ModalRoute.withName(''));
+                            context,
+                            MaterialPageRoute(
+                              builder: (BuildContext context) =>
+                                  AdminHomepage(),
+                            ),
+                            ModalRoute.withName(''),
+                          );
                         } else if (v == 'manager') {
-                          Navigator.pushAndRemoveUntil(
+                          setState(() {
+                            isLoading=false;
+                          });
+                          loginSetShopLoginDetails(shopName: shopNameController.text.toString(),managerName:userNameController.text.toString(),isLogin: true);
+                          fire.setDailyLoginStatus(managerName: userNameController.text.toString(),shopName:shopNameController.text.toString());
+                            Navigator.pushAndRemoveUntil(
                               context,
                               MaterialPageRoute(
-                                  builder: (BuildContext context) =>
-                                      Homepage()),
-                              ModalRoute.withName(''));
+                                  builder: (BuildContext context) => Homepage()),
+                              ModalRoute.withName(''),
+                            );
+
                         } else if (v == "notFound") {
                           setState(() {
                             error = "Invalid cretentials";
+                            isLoading=false;
                           });
                         } else if (v == "blocked") {
                           setState(() {
                             error = "Blocked by Admin";
+                            isLoading=false;
                           });
                         }
                       } else {
                         setState(() {
                           error = 'Invalid Error';
+                          isLoading=false;
                         });
                       }
                     });
