@@ -121,13 +121,6 @@ class _AdminEditProductsState extends State<AdminEditProducts> {
                                 }
                             });
                   }
-
-                  // Navigator.push(
-                  //   context,
-                  //   MaterialPageRoute(
-                  //     builder: (BuildContext context) => AdminFinalAlert(),
-                  //   ),
-                  // ),
                 }),
             appBar:
                 app_bar(title: widget.shopName ?? "None", actionText: "Edit"),

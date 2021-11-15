@@ -168,12 +168,13 @@ class _AdminAddShopState extends State<AdminAddShop> {
                       setState(() {
                         isLoading = false;
                       });
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (BuildContext context) => AdminHomepage(),
-                        ),
-                      );
+
+                      Navigator.pushAndRemoveUntil(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => AdminHomepage(),
+                          ),
+                          (route) => false);
                     }
                   });
                 }

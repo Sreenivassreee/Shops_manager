@@ -53,7 +53,7 @@ class AdminSalesReport extends StatelessWidget {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                "Brand : MI  ${index}",
+                                "Brand : MI  $index",
                               ),
                               SizedBox(height: 5),
                               Text(
