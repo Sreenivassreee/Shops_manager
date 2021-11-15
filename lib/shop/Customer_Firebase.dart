@@ -1,5 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:number_to_words/number_to_words.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:shops_manager/globalcode/date.dart';
 import 'package:shops_manager/pdf/api/pdf_api.dart';
 import 'package:shops_manager/pdf/api/pdf_invoice_api.dart';
 import 'package:shops_manager/pdf/model/customer.dart';
@@ -9,6 +11,7 @@ import 'package:shops_manager/shop/models/cus.dart';
 
 class CFireBase {
   CollectionReference shops = FirebaseFirestore.instance.collection('shops');
+  var date = getDate();
   SellProduct(
       {customer,
       id,
@@ -22,9 +25,11 @@ class CFireBase {
     //print(quantity);
     //print(toalPrice);
     var status = "";
+    SharedPreferences p = await SharedPreferences.getInstance();
 
+    var shop = p.getString('shop-name');
     await shops
-        .doc("shop")
+        .doc(shop)
         .collection("products")
         .doc(id)
         .get()
@@ -83,9 +88,9 @@ class CFireBase {
                                   {
                                     status = "AfterSellingUpdate",
                                     await shops
-                                        .doc("shop")
+                                        .doc(shop)
                                         .collection('sells')
-                                        .doc("test2")
+                                        .doc(date)
                                         .set({
                                       customer.mobile: FieldValue.arrayUnion([
                                         {
@@ -104,7 +109,7 @@ class CFireBase {
                                                 "sell_by_manager",
                                             "now_time_stamp": DateTime.now(),
                                             "now_storage": productStorage,
-                                            "now_sell_by_shop": "shop",
+                                            "now_sell_by_shop": shop,
                                             "now_quantity": quantity,
                                             "now_model": productModel,
                                             "now__id": id,
@@ -150,7 +155,7 @@ class CFireBase {
         status = "Invalid Product Id";
       }
     });
-    print("{Main Status}"+status);
+    print("{Main Status}" + status);
 
     return status;
   }
@@ -163,17 +168,21 @@ class CFireBase {
       {id, quantity, customer, sellingQuantity, productQuantity}) async {
     print("1");
     var status = '';
+    SharedPreferences p = await SharedPreferences.getInstance();
+    var shop = p.getString('shop-name');
+    var manager=p.getString('shop-manager');
     try {
       print("2");
       await shops
-          .doc("shop")
+          .doc(shop)
           .collection("products")
           .doc(id)
           .update({
             "product_quantity": quantity.toString().trim(),
             "_last_updated": FieldValue.arrayUnion([
               {
-                'updatedBy': "NeedToAdd",
+                'updated_by': manager,
+                'updated_shop':shop,
                 'changes': "Selled to " +
                     customer.name +
                     " => " +
@@ -192,40 +201,27 @@ class CFireBase {
                     " ) " +
                     " ) " +
                     " ) ",
-                'timestamp': DateTime.now().toString(),
+                'updated_at': DateTime.now().toString(),
               }
             ])
           })
           .then((value) => {
-                print("3"),
+
                 status = "Done",
               })
           .catchError(
             (error) {
-              print("4");
+
               status = "Error";
             },
           );
 
       return status;
     } catch (e) {
-      print("5");
       print(e);
       status = "Error";
       return status;
     }
-  }
-
-  UpdateTheUrl({url, customerMobile}) async {
-    await shops.doc("shop").collection('sells').doc("test").update({
-      customerMobile: FieldValue.arrayUnion([
-        {
-          "buy_products": {
-            "now_bill_url": url,
-          },
-        }
-      ])
-    });
   }
 
   Future<String> GenerateBill(
@@ -241,7 +237,6 @@ class CFireBase {
 
     final date = DateTime.now();
     final dueDate = date.add(Duration(days: 7));
-
     var productModel = documentSnapshot['product_model'] ?? "";
     var productRam = documentSnapshot['product_ram'] ?? "0";
     var productStorage = documentSnapshot['product_storage'] ?? "0";

@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shops_manager/export.dart';
 import 'package:shops_manager/globalcode/date.dart';
 
@@ -100,6 +101,9 @@ class Fire {
   Future<String> AddProductToShop(
       {shopName, brand, phoneModel, ram, storage, price, quantity}) async {
     var status = '';
+    SharedPreferences p = await SharedPreferences.getInstance();
+    var shop = p.getString('shop-name');
+    var manager = p.getString('manager-name');
     try {
       if (shopName == null) {
         status = "NoShop";
@@ -110,14 +114,11 @@ class Fire {
         var tempPhoneModel = phoneModel.toLowerCase().toString().trim();
         var tempRam = ram.toString().toLowerCase().trim();
         var tempStorage = storage.toString().toLowerCase().trim();
-        await shops
-            .doc(shopName)
-            .collection("products")
-            .doc(tempBrand.replaceAll(' ', '') +
-                tempPhoneModel.replaceAll(' ', '') +
-                tempRam.replaceAll(' ', '') +
-                tempStorage.replaceAll(' ', ''))
-            .set({
+        var id = tempBrand.replaceAll(' ', '') +
+            tempPhoneModel.replaceAll(' ', '') +
+            tempRam.replaceAll(' ', '') +
+            tempStorage.replaceAll(' ', '');
+        await shops.doc(shopName).collection("products").doc(id).set({
           "product_brand": tempBrand,
           "product_model": tempPhoneModel,
           "product_price": tempPrice,
@@ -126,9 +127,11 @@ class Fire {
           "product_quantity": tempQantity,
           "_last_updated": FieldValue.arrayUnion([
             {
-              'updatedBy': "NeedToAdd",
-              'changes': "NeedToAdd",
-              'timestamp': DateTime.now().toString(),
+              'updated_by': manager,
+              'updated_shop': shop,
+              'changes':
+                  "[(Added => ( $id ) Products=>( $tempQantity ) and Price =>($tempPrice))]",
+              'updated_at': DateTime.now(),
             }
           ])
         }).then((value) => {status = "Done"});
@@ -149,6 +152,8 @@ class Fire {
       storage,
       price,
       quantity,
+      beforeUpdateQuantity,
+      beforeUpdatePrice,
       isDeleted}) async {
     var status = '';
     try {
@@ -159,23 +164,27 @@ class Fire {
         var tempPhoneModel = phoneModel.toLowerCase().toString().trim();
         var tempRam = ram.toString().toLowerCase().trim();
         var tempStorage = storage.toString().toLowerCase().trim();
+        var id = tempBrand.replaceAll(' ', '') +
+            tempPhoneModel.replaceAll(' ', '') +
+            tempRam.replaceAll(' ', '') +
+            tempStorage.replaceAll(' ', '');
 
-        await shops
-            .doc(shopName)
-            .collection("products")
-            .doc(tempBrand.replaceAll(' ', '') +
-                tempPhoneModel.replaceAll(' ', '') +
-                tempRam.replaceAll(' ', '') +
-                tempStorage.replaceAll(' ', ''))
-            .update({
+        SharedPreferences p = await SharedPreferences.getInstance();
+        var shop = p.getString('shop-name');
+        var manager = p.getString('manager-name');
+
+        await shops.doc(shopName).collection("products").doc(id).update({
           "product_price": price.toString().trim(),
           "product_quantity": quantity.toString().trim(),
           "_isDeleted": isDeleted,
+
           "_last_updated": FieldValue.arrayUnion([
             {
-              'updatedBy': "NeedToAdd",
-              'changes': "NeedToAdd",
-              'timestamp': DateTime.now().toString(),
+              'updated_by': manager,
+              'updated_shop': shop,
+              'changes':
+                  "[(Updated => ( $id ) Products=>[($beforeUpdateQuantity) to ($quantity) ] and Price =>[($beforeUpdatePrice) to ($price)])]",
+              'updated_at': DateTime.now(),
             }
           ])
         }).then((value) => {status = "Done"});
@@ -220,49 +229,50 @@ class Fire {
 
 // }
 
-  Future<String> UpdateToDeleteProduct(
-      {shopName,
-      brand,
-      phoneModel,
-      ram,
-      storage,
-      price,
-      quantity,
-      isDeleted}) async {
-    var status = '';
-    try {
-      if (shopName == null) {
-        status = "NoShop";
-      } else {
-        var tempBrand = brand.toString().toLowerCase().trim();
-        var tempPhoneModel = phoneModel.toLowerCase().toString().trim();
-        var tempRam = ram.toString().toLowerCase().trim();
-        var tempStorage = storage.toString().toLowerCase().trim();
-
-        await shops
-            .doc(shopName)
-            .collection("products")
-            .doc(tempBrand.replaceAll(' ', '') +
-                tempPhoneModel.replaceAll(' ', '') +
-                tempRam.replaceAll(' ', '') +
-                tempStorage.replaceAll(' ', ''))
-            .update({
-          "_last_updated": FieldValue.arrayUnion([
-            {
-              'updatedBy': "NeedToAdd",
-              'changes': "NeedToAdd",
-              'timestamp': DateTime.now().toString(),
-            }
-          ])
-        }).then((value) => {status = "Done"});
-      }
-      return status;
-    } catch (e) {
-      print(e);
-      status = "Error";
-      return status;
-    }
-  }
+//Not Using
+//   Future<String> UpdateToDeleteProduct(
+//       {shopName,
+//       brand,
+//       phoneModel,
+//       ram,
+//       storage,
+//       price,
+//       quantity,
+//       isDeleted}) async {
+//     var status = '';
+//     try {
+//       if (shopName == null) {
+//         status = "NoShop";
+//       } else {
+//         var tempBrand = brand.toString().toLowerCase().trim();
+//         var tempPhoneModel = phoneModel.toLowerCase().toString().trim();
+//         var tempRam = ram.toString().toLowerCase().trim();
+//         var tempStorage = storage.toString().toLowerCase().trim();
+//
+//         await shops
+//             .doc(shopName)
+//             .collection("products")
+//             .doc(tempBrand.replaceAll(' ', '') +
+//                 tempPhoneModel.replaceAll(' ', '') +
+//                 tempRam.replaceAll(' ', '') +
+//                 tempStorage.replaceAll(' ', ''))
+//             .update({
+//           "_last_updated": FieldValue.arrayUnion([
+//             {
+//               'updatedBy': "NeedToAdd",
+//               'changes': "NeedToAdd",
+//               'updated_at': DateTime.now(),
+//             }
+//           ])
+//         }).then((value) => {status = "Done"});
+//       }
+//       return status;
+//     } catch (e) {
+//       print(e);
+//       status = "Error";
+//       return status;
+//     }
+//   }
 
   setDailyLoginStatus({shopName, managerName}) async {
     var date = getDate();
@@ -272,7 +282,12 @@ class Fire {
         .doc(managerName)
         .collection('logins')
         .doc(date)
-        .set({'_isLogin': true});
+        .set(
+      {
+        '_isLogin': true,
+        'updated_at': DateTime.now(),
+      },
+    );
   }
 }
 

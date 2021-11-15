@@ -50,7 +50,7 @@ class _FinalAlertState extends State<FinalAlert> {
   final formatCurrency =
       NumberFormat.simpleCurrency(locale: Platform.localeName, name: 'INR');
   var transactionStatus = "";
-  var code = Random().nextInt(999);
+  var code = 100+Random().nextInt(1100);
   var userCode = TextEditingController();
   bool? isLoading;
 
@@ -72,7 +72,6 @@ class _FinalAlertState extends State<FinalAlert> {
     price = price[0];
     super.initState();
   }
-
   @override
   void dispose() {
     super.dispose();

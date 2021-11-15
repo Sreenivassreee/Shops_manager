@@ -17,12 +17,15 @@ class _AdminEditProductsState extends State<AdminEditProducts> {
   var eachProduct;
   var brand = '';
   var error = '';
+  var beforeUpdateQuantity;
+  var beforeUpdatePrice;
   bool isDeleted = false;
   TextEditingController phoneModel = TextEditingController();
   TextEditingController ram = TextEditingController();
   TextEditingController storage = TextEditingController();
   TextEditingController price = TextEditingController();
   TextEditingController quantity = TextEditingController();
+
 
   @override
   void initState() {
@@ -35,6 +38,9 @@ class _AdminEditProductsState extends State<AdminEditProducts> {
     storage.text = widget.eachProduct?['product_storage'];
     price.text = widget.eachProduct?['product_price'];
     quantity.text = widget.eachProduct?['product_quantity'];
+    beforeUpdateQuantity= widget.eachProduct?['product_quantity'];
+    beforeUpdatePrice=widget.eachProduct?['product_price'];
+
     try {
       isDeleted = widget.eachProduct?['_isDeleted'];
       // print(isDeleted);
@@ -57,6 +63,8 @@ class _AdminEditProductsState extends State<AdminEditProducts> {
                     storage: storage.text,
                     price: price.text,
                     quantity: quantity.text,
+                beforeUpdateQuantity:beforeUpdateQuantity,
+                beforeUpdatePrice:beforeUpdatePrice,
                     isDeleted: isDeleted)
                 .then((value) => {
                       if (value == "Done")
