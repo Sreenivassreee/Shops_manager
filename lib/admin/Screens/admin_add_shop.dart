@@ -93,7 +93,6 @@ class _AdminAddShopState extends State<AdminAddShop> {
                             value: _isActive,
                             onChanged: (bool value) {
                               setState(() {
-                                print(value);
                                 _isActive = !_isActive;
                               });
                             },
@@ -116,7 +115,6 @@ class _AdminAddShopState extends State<AdminAddShop> {
                               value: isAdmin,
                               onChanged: (bool value) {
                                 setState(() {
-                                  print(value);
                                   isAdmin = !isAdmin;
                                 });
                               },

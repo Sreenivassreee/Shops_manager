@@ -1,6 +1,6 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl.dart'; // for date format
-
 // void main() {
 //   var now = DateTime.now();
 //   print(DateFormat().format(now)); // This will return date using the default locale
@@ -21,4 +21,17 @@ String getDate() {
   var dateString = DateFormat('dd-MM-yyyy').format(now);
   final String configFileName = 'lastConfig.$dateString.json';
   return dateString;
+}
+
+String revGetDate() {
+  initializeDateFormatting();
+  DateTime now = DateTime.now();
+  var dateString = DateFormat('yyy-MM-dd').format(now);
+  final String configFileName = 'lastConfig.$dateString.json';
+  return dateString;
+}
+
+String getTimeStamp({time}) {
+  var t = (time as Timestamp).toDate();
+  return DateFormat('dd/MM/yyyy, hh:mm a').format(t);
 }

@@ -60,10 +60,10 @@ class _AdminEditProductsState extends State<AdminEditProducts> {
                   setState(() {
                     isLoading = true;
                   });
-                  print("[price.text.isNotEmpty]" +
-                      (!price.text.isNotEmpty).toString());
-                  print("[quantity.text.isNotEmpty]" +
-                      (!quantity.text.isNotEmpty).toString());
+                  //print("[price.text.isNotEmpty]" +
+                  //    (!price.text.isNotEmpty).toString());
+                 // print("[quantity.text.isNotEmpty]" +
+                      //(!quantity.text.isNotEmpty).toString());
                   if (!price.text.isNotEmpty || !quantity.text.isNotEmpty) {
                     show(context, "Invalid info needed");
                     setState(() {

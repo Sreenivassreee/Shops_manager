@@ -303,6 +303,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.0.1"
+  more:
+    dependency: "direct main"
+    description:
+      name: more
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "3.3.0"
   number_to_words:
     dependency: "direct main"
     description:

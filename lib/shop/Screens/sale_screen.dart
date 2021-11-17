@@ -53,7 +53,6 @@ class _SalePageState extends State<SalePage> {
           productRam.replaceAll(' ', '') +
           productStorage.replaceAll(' ', '');
     } catch (e) {}
-    print(id);
     super.initState();
   }
 

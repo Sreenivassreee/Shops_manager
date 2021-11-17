@@ -1,6 +1,7 @@
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shops_manager/admin/Screens/admin_same_brand_products.dart';
 import 'package:shops_manager/export.dart';
+import 'package:shops_manager/shop/Screens/today_sales.dart';
 import 'package:shops_manager/shop/shared-pref/shop-shared-pref.dart';
 import 'package:shops_manager/widgets/global/toast.dart';
 
@@ -42,7 +43,7 @@ class _HomepageState extends State<Homepage> {
             .collection('products')
             .snapshots();
     });
-    print("[Homepage Shop Name]" +shopName);
+    //print("[Homepage Shop Name]" +shopName);
     return true;
   }
 
@@ -57,7 +58,9 @@ class _HomepageState extends State<Homepage> {
             children: [
               btn(
                 btnTitle: "TODAY SALES",
-                action: () {},
+                action: () {
+                  Navigator.push(context, MaterialPageRoute(builder: (_)=>TodaySales()));
+                },
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -104,7 +107,7 @@ class _HomepageState extends State<Homepage> {
           if (snapshot.hasData) {
             var docs = snapshot.data?.docs;
             shopsData = docs;
-            // print(docs!.length);
+            //// print(docs!.length);
             var tempAllBrands = [];
             var tempBrands = [];
             try {
@@ -112,9 +115,9 @@ class _HomepageState extends State<Homepage> {
                 var brd = docs[i]['product_brand'];
                 tempAllBrands.add(brd);
               }
-              print(tempAllBrands);
+              //print(tempAllBrands);
               for (var i = 0; i < tempAllBrands.length; i++) {
-                print(tempAllBrands[i]);
+                //print(tempAllBrands[i]);
                 if (tempBrands.contains(
                       tempAllBrands[i].toString().toLowerCase().trim(),
                     ) ==
@@ -126,7 +129,7 @@ class _HomepageState extends State<Homepage> {
               }
               brands = tempBrands;
             } catch (e) {
-              print("[Error in AdminStockProductScreen => 112]");
+              //print("[Error in AdminStockProductScreen => 112]");
             }
           }
 

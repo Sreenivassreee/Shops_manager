@@ -1,13 +1,8 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:shops_manager/pdf/page/pdf_page.dart';
-import 'package:shops_manager/shop/Screens/flash_screen.dart';
-import 'package:shops_manager/shop/Screens/test.dart';
-import 'package:shops_manager/shop/shared-pref/shop-shared-pref.dart';
-import 'package:shops_manager/widgets/global/sale_product_sucess.dart';
+import 'package:shops_manager/shop/Screens/navPage.dart';
 import 'package:shops_manager/widgets/global/toast.dart';
-
 import 'export.dart';
 import 'globalcode/date.dart';
 
@@ -38,7 +33,7 @@ class _MyAppState extends State<MyApp> {
   void initState() {
     // logout();
     date = getDate();
-    print("[Init]");
+    //print("[Init]");
     loginCheck();
     super.initState();
     isAdminLogin = false;
@@ -50,9 +45,9 @@ class _MyAppState extends State<MyApp> {
       isLogin = p.getBool('is-login');
     });
     shopName = p.getString('shop-name');
-    print("[shopName]" + shopName.toString());
+    //print("[shopName]" + shopName.toString());
     managerName = p.getString('manager-name');
-    print("[managerName]" + managerName.toString());
+    //print("[managerName]" + managerName.toString());
     admin = p.getBool('is-admin');
     if (admin == true && shopName != null && managerName != null) {
       setState(() {
@@ -73,21 +68,21 @@ class _MyAppState extends State<MyApp> {
               var temp = documentSnapshot;
               var todayLogin = temp['_isLogin'];
               if (todayLogin == null || todayLogin == false) {
-                print("[_isLogin]");
+                //print("[_isLogin]");
                 setState(() {
                   isLogin = false;
                 });
               } else if (todayLogin) {
                 await users.doc(shopName).get().then((v) {
                   if (v['_is_active'] == true) {
-                    print("['_is_active]");
+                    ////print("['_is_active]");
                     setState(() {
                       isLogin = true;
                       isLoading = false;
                     });
                   } else {
                     show(context, "You are in blocking list");
-                    print("[You are in blocking list]");
+                    //print("[You are in blocking list]");
                     setState(() {
                       isLogin = false;
                     });
@@ -105,7 +100,7 @@ class _MyAppState extends State<MyApp> {
         setState(() {
           isLogin = false;
         });
-        print(e);
+        //print(e);
       }
     } else {
       setState(() {
@@ -118,7 +113,7 @@ class _MyAppState extends State<MyApp> {
         isLoading = false;
       });
     } else {}
-    print("[isLogin]" + isLogin.toString());
+    //print("[isLogin]" + isLogin.toString());
   }
 
   @override
@@ -151,11 +146,9 @@ class _MyAppState extends State<MyApp> {
               appBarTheme: AppBarTheme(
                 color: Colors.indigo[50],
                 centerTitle: false,
-              )
-
-              ),
+              )),
           home: (isAdminLogin == true)
-              ? AdminHomepage()
+              ? MyBottomBarDemo()
               : (isLoading &&
                       (snapshot.connectionState == ConnectionState.waiting)
                   ? Splash()

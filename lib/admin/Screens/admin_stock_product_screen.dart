@@ -39,13 +39,13 @@ class _AdminStockProductScreenState extends State<AdminStockProductScreen> {
   void set() {
     if (shopName.length > 0) {
     } else {
-      print("NO Shop Name");
+      //print("NO Shop Name");
     }
   }
 
   // void filter(docs) {
-  //   print(docs[0]['product_brand']);
-  //   print(temp);
+  ////   print(docs[0]['product_brand']);
+  ////   print(temp);
   // }
 
   @override
@@ -88,7 +88,7 @@ class _AdminStockProductScreenState extends State<AdminStockProductScreen> {
           if (snapshot.hasData) {
             var docs = snapshot.data?.docs;
             shopsData = docs;
-            // print(docs!.length);
+            //// print(docs!.length);
             var tempAllBrands = [];
             var tempBrands = [];
             try {
@@ -96,9 +96,9 @@ class _AdminStockProductScreenState extends State<AdminStockProductScreen> {
                 var brd = docs[i]['product_brand'];
                 tempAllBrands.add(brd);
               }
-              print(tempAllBrands);
+              //print(tempAllBrands);
               for (var i = 0; i < tempAllBrands.length; i++) {
-                print(tempAllBrands[i]);
+                //print(tempAllBrands[i]);
                 if (tempBrands.contains(
                       tempAllBrands[i].toString().toLowerCase().trim(),
                     ) ==
@@ -110,7 +110,7 @@ class _AdminStockProductScreenState extends State<AdminStockProductScreen> {
               }
               brands = tempBrands;
             } catch (e) {
-              print("[Error in AdminStockProductScreen => 112]");
+              //print("[Error in AdminStockProductScreen => 112]");
             }
           }
 
