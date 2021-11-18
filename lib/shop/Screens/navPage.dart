@@ -3,12 +3,12 @@ import 'package:shops_manager/admin/main_sale_details_screen.dart';
 
 import '../../export.dart';
 
-class MyBottomBarDemo extends StatefulWidget {
+class NavScreen extends StatefulWidget {
   @override
-  _MyBottomBarDemoState createState() => new _MyBottomBarDemoState();
+  _NavScreenState createState() => new _NavScreenState();
 }
 
-class _MyBottomBarDemoState extends State<MyBottomBarDemo> {
+class _NavScreenState extends State<NavScreen> {
   int _pageIndex = 0;
   PageController? _pageController;
 

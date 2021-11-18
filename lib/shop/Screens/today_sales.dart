@@ -79,21 +79,26 @@ class _TodaySalesState extends State<TodaySales> {
               itemCount: salesProductData.length,
               itemBuilder: (context, mi) {
                 var innerCount = salesProductData[mi].length;
-                var h = (innerCount * 130) + 70;
-                var name = salesProductData[0][0]['customer_details']['name'][0]
+                var h = (innerCount * 120) + 70;
+                var name = salesProductData[mi][0]['customer_details']['name']
                     .toString()
                     .toUpperCase();
-                var mobile = salesProductData[0][0]['customer_details']
+                var mobile = salesProductData[mi][0]['customer_details']
                         ['mobile']
                     .toUpperCase();
                 return Padding(
                   padding:
                       const EdgeInsets.symmetric(horizontal: 5, vertical: 2),
                   child: Card(
+                    shape: RoundedRectangleBorder(
+                      side: BorderSide(color: Colors.white70, width: 1),
+                      borderRadius: BorderRadius.circular(15),
+                    ),
                     elevation: 0,
                     child: Container(
                       height: h.toDouble(),
                       child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Padding(
                             padding: const EdgeInsets.symmetric(
@@ -101,9 +106,9 @@ class _TodaySalesState extends State<TodaySales> {
                             child: Row(
                               children: [
                                 CircleAvatar(
-                                  radius: 25,
+                                  radius: 20,
                                   child: Text(
-                                    name,
+                                    name[0],
                                     style: TextStyle(
                                         fontWeight: FontWeight.bold,
                                         color: Colors.black),
@@ -118,7 +123,7 @@ class _TodaySalesState extends State<TodaySales> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(name),
-                                    SizedBox(height: 10),
+                                    SizedBox(height: 5),
                                     Text(mobile),
                                   ],
                                 )
@@ -179,8 +184,13 @@ class _TodaySalesState extends State<TodaySales> {
                                       horizontal: 5,
                                     ),
                                     child: Card(
-                                      color: Colors.indigo[50],
+                                      shape: RoundedRectangleBorder(
+                                        side: BorderSide(color: Colors.black12, width: 1),
+                                        borderRadius: BorderRadius.circular(10),
+                                      ),
+                                      // color: Colors.indigo[50],
                                       elevation: 0,
+
                                       child: Padding(
                                         padding: const EdgeInsets.only(
                                             top: 0.0,
@@ -211,9 +221,15 @@ class _TodaySalesState extends State<TodaySales> {
                                                     ),
                                                     SizedBox(height: 20),
                                                     Container(
+                                                      decoration: new BoxDecoration(
+                                                        color: Colors.indigo[50],
+                                                        shape: BoxShape.rectangle,
+                                                        borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                                                        border: Border.all(width: 1.0, color: Colors.white),
+                                                      ),
                                                       padding:
-                                                          EdgeInsets.all(3),
-                                                      color: Colors.grey[50],
+                                                          EdgeInsets.all(4),
+                                                      // color: Colors.indigo[50],
                                                       child: Text(
                                                         "$id",
                                                         style: TextStyle(
@@ -274,21 +290,16 @@ class _TodaySalesState extends State<TodaySales> {
                                                           children: [
                                                             CircleAvatar(
                                                               radius:15,
-                                                                backgroundColor: Colors.indigo[100],
+                                                                backgroundColor: Colors.indigo[50],
                                                                 child: Text("$quantity",style: TextStyle(color: Colors.green,fontWeight: FontWeight.bold),),),
                                                             Container(
-                                                              color: Colors
-                                                                  .indigo[100],
+
                                                               child: SizedBox(
                                                                   height: 10),
                                                             ),
                                                             SizedBox(height: 5),
                                                             Container(
                                                               padding: EdgeInsets.all(2),
-                                                                color: Colors
-                                                                        .indigo[
-                                                                    100],
-
                                                                 child: InkWell(
                                                                   onTap: (){
                                                                     Share.share(
@@ -304,9 +315,6 @@ class _TodaySalesState extends State<TodaySales> {
                                                               padding: EdgeInsets.all(2),
                                                               child: Icon(CupertinoIcons
                                                                   .book),
-                                                              color: Colors
-                                                                  .indigo[
-                                                              100],
                                                             ),
                                                           ],
                                                         ),

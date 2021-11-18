@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl.dart'; // for date format
@@ -34,4 +36,13 @@ String revGetDate() {
 String getTimeStamp({time}) {
   var t = (time as Timestamp).toDate();
   return DateFormat('dd/MM/yyyy, hh:mm a').format(t);
+}
+
+
+String getMoney({money}){
+  final formatCurrency =
+  NumberFormat.simpleCurrency(locale: Platform.localeName, name: 'INR');
+  var price = formatCurrency.format(int.parse(money)).split('.')[0];
+  print(price);
+  return price;
 }

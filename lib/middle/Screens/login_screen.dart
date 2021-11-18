@@ -2,12 +2,13 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:shops_manager/admin/Screens/admin_home_screen.dart';
 import 'package:shops_manager/admin/firebase/fire.dart';
+import 'package:shops_manager/shop/Screens/navPage.dart';
 import 'package:shops_manager/shop/shared-pref/shop-shared-pref.dart';
 
 import 'package:shops_manager/widgets/btn.dart';
 import 'package:shops_manager/widgets/title_text.dart';
 
-import 'home_screen.dart';
+import '../../shop/Screens/home_screen.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -122,7 +123,7 @@ class _LoginPageState extends State<LoginPage> {
                                   context,
                                   MaterialPageRoute(
                                     builder: (BuildContext context) =>
-                                        AdminHomepage(),
+                                        NavScreen(),
                                   ),
                                   ModalRoute.withName(''),
                                 );

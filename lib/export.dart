@@ -3,7 +3,7 @@ export 'widgets/t_button.dart';
 export 'widgets/title_text.dart';
 export 'package:flutter/material.dart';
 export 'shop/Screens/final_alert.dart';
-export 'shop/Screens/login_screen.dart';
+export 'middle/Screens/login_screen.dart';
 export 'package:shops_manager/shop/Screens/payment_screen.dart';
 export 'package:shops_manager/shop/Screens/product_details.dart';
 export 'package:shops_manager/shop/Screens/sale_screen.dart';

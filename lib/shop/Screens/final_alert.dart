@@ -5,6 +5,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:intl/intl.dart';
 import 'package:otp_screen/otp_screen.dart';
+import 'package:shops_manager/globalcode/date.dart';
 
 import 'package:shops_manager/shop/Customer_Firebase.dart';
 import 'package:shops_manager/widgets/global/sale_product_sucess.dart';
@@ -46,14 +47,15 @@ class _FinalAlertState extends State<FinalAlert> {
   var productQuantity;
   var productBrand;
   var price;
+  var modefiedShowPrice;
+  var modefiedShowProductPrice;
   var cFire = CFireBase();
   final formatCurrency =
       NumberFormat.simpleCurrency(locale: Platform.localeName, name: 'INR');
   var transactionStatus = "";
-  var code = 100+Random().nextInt(1100);
+  var code = 100 + Random().nextInt(1100);
   var userCode = TextEditingController();
   bool? isLoading;
-
   @override
   void initState() {
     isLoading = false;
@@ -64,18 +66,16 @@ class _FinalAlertState extends State<FinalAlert> {
     productPrice = widget.eachProduct['product_price'] ?? "None";
     productQuantity = widget.eachProduct['product_quantity'] ?? "0";
     productBrand = widget.eachProduct['product_brand'] ?? "0";
-    productPrice = formatCurrency.format(int.parse(productPrice));
-    productPrice = productPrice.split('.');
-    productPrice = productPrice[0];
-    price = formatCurrency.format(int.parse(widget.totalPrice));
-    price = price.split('.');
-    price = price[0];
+    modefiedShowProductPrice = getMoney(money: productPrice);
+    modefiedShowPrice = getMoney(money: widget.totalPrice);
+
     super.initState();
   }
+
   @override
   void dispose() {
     super.dispose();
-      isLoading = false;
+    isLoading = false;
   }
 
   @override
@@ -109,7 +109,7 @@ class _FinalAlertState extends State<FinalAlert> {
                       "GB" +
                       "\n\n" +
                       "  " +
-                      price +
+                      modefiedShowPrice +
                       " /- ",
                   otpLength: 3,
                   validateOtp: validateOtp,
@@ -145,7 +145,7 @@ class _FinalAlertState extends State<FinalAlert> {
       await cFire.SellProduct(
               customer: widget.customer,
               id: widget.id,
-              toalPrice: price.toString(),
+              toalPrice: widget.totalPrice,
               quantity: widget.quantity.toString(),
               paymentMode: widget.paymentMode,
               customerSellingPrice: widget.customerSellingPrice,

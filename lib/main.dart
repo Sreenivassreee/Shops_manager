@@ -148,7 +148,7 @@ class _MyAppState extends State<MyApp> {
                 centerTitle: false,
               )),
           home: (isAdminLogin == true)
-              ? MyBottomBarDemo()
+              ? NavScreen()
               : (isLoading &&
                       (snapshot.connectionState == ConnectionState.waiting)
                   ? Splash()

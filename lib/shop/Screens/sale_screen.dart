@@ -43,6 +43,7 @@ class _SalePageState extends State<SalePage> {
     productPrice = widget.eachProduct['product_price'] ?? "None";
     productQuantity = widget.eachProduct['product_quantity'] ?? "0";
     productBrand = widget.eachProduct['product_brand'] ?? "0";
+
     productPrice = formatCurrency.format(int.parse(productPrice));
     productPrice = productPrice.split('.');
     productPrice = productPrice[0];
