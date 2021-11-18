@@ -68,7 +68,6 @@ class _FinalAlertState extends State<FinalAlert> {
     productBrand = widget.eachProduct['product_brand'] ?? "0";
     modefiedShowProductPrice = getMoney(money: productPrice);
     modefiedShowPrice = getMoney(money: widget.totalPrice);
-
     super.initState();
   }
 

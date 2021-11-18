@@ -108,7 +108,7 @@ class _AdminSameBrandProductsState extends State<AdminSameBrandProducts> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text(
-                                "Stock",
+                                "STOCK",
                                 style: TextStyle(color: Colors.green),
                               ),
                               Padding(

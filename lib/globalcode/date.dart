@@ -25,9 +25,23 @@ String getDate() {
   return dateString;
 }
 
+String getSelectedDisplayDate(now) {
+  initializeDateFormatting();
+  var dateString = DateFormat('dd-MM-yyyy').format(now);
+  final String configFileName = 'lastConfig.$dateString.json';
+  return dateString;
+}
+
 String revGetDate() {
   initializeDateFormatting();
   DateTime now = DateTime.now();
+  var dateString = DateFormat('yyy-MM-dd').format(now);
+  final String configFileName = 'lastConfig.$dateString.json';
+  return dateString;
+}
+
+String revGetBillDate(now) {
+  initializeDateFormatting();
   var dateString = DateFormat('yyy-MM-dd').format(now);
   final String configFileName = 'lastConfig.$dateString.json';
   return dateString;
@@ -38,11 +52,10 @@ String getTimeStamp({time}) {
   return DateFormat('dd/MM/yyyy, hh:mm a').format(t);
 }
 
-
-String getMoney({money}){
+String getMoney({money}) {
   final formatCurrency =
-  NumberFormat.simpleCurrency(locale: Platform.localeName, name: 'INR');
+      NumberFormat.simpleCurrency(locale: Platform.localeName, name: 'INR');
   var price = formatCurrency.format(int.parse(money)).split('.')[0];
-  print(price);
+
   return price;
 }

@@ -5,6 +5,7 @@ import 'package:shops_manager/shop/Screens/navPage.dart';
 import 'package:shops_manager/widgets/global/toast.dart';
 import 'export.dart';
 import 'globalcode/date.dart';
+import 'package:flutter/services.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -118,6 +119,10 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+      statusBarColor: Colors.indigo[50],
+    ));
+
     return FutureBuilder(
       future: Init.instance.initialize(),
       builder: (context, AsyncSnapshot snapshot) {

@@ -1,16 +1,19 @@
 import 'package:flutter/cupertino.dart';
+import 'package:intl/intl.dart';
+import 'package:shops_manager/admin/Screens/admin_sales_report.dart';
+import 'package:shops_manager/admin/Screens/all_sales.dart';
 import 'package:shops_manager/export.dart';
 import 'package:shops_manager/shop/shared-pref/shop-shared-pref.dart';
 import 'package:shops_manager/widgets/global/cuperLoading.dart';
 
-class AdminHomepage extends StatefulWidget {
-  const AdminHomepage({Key? key}) : super(key: key);
+class AdminSalesScreen extends StatefulWidget {
+  const AdminSalesScreen({Key? key}) : super(key: key);
 
   @override
-  State<AdminHomepage> createState() => _AdminHomepageState();
+  State<AdminSalesScreen> createState() => _AdminSalesScreenState();
 }
 
-class _AdminHomepageState extends State<AdminHomepage> {
+class _AdminSalesScreenState extends State<AdminSalesScreen> {
   final Stream<QuerySnapshot> _usersStream =
       FirebaseFirestore.instance.collection('shops').snapshots();
   @override
@@ -28,7 +31,7 @@ class _AdminHomepageState extends State<AdminHomepage> {
         automaticallyImplyLeading: false,
         elevation: 0,
         title: TitleText(
-          title: "SHOPS",
+          title: "SALES",
         ),
         actions: [
           Container(
@@ -72,7 +75,8 @@ class _AdminHomepageState extends State<AdminHomepage> {
               var products;
               var productCount = "0";
               var managerName = data['user_name'];
-              var shopName = data["shop_name"];
+              var shopName = toBeginningOfSentenceCase(data["shop_name"]);
+
               // print(data);
               // if (data["products"]?.length != null) {
               //   var len = data["products"]?.length;
@@ -94,8 +98,7 @@ class _AdminHomepageState extends State<AdminHomepage> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (BuildContext context) =>
-                          AdminStockProductScreen(
+                      builder: (BuildContext context) => AllSales(
                         data: tempData = {
                           "shopName": shopName,
                           "manager": managerName
@@ -107,9 +110,14 @@ class _AdminHomepageState extends State<AdminHomepage> {
                 child: Container(
                   padding: EdgeInsets.symmetric(vertical: 1, horizontal: 5),
                   child: Card(
+                    shape: RoundedRectangleBorder(
+                      side: BorderSide(color: Colors.white70, width: 1),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
                     elevation: 0,
                     child: Padding(
-                      padding: const EdgeInsets.all(15.0),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 10, vertical: 15.0),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -131,12 +139,12 @@ class _AdminHomepageState extends State<AdminHomepage> {
                                   fontSize: 15,
                                 ),
                               ),
-                              Text(
-                                productCount,
-                                style: TextStyle(
-                                  fontSize: 20,
-                                ),
-                              )
+                              // Text(
+                              //   productCount,
+                              //   style: TextStyle(
+                              //     fontSize: 20,
+                              //   ),
+                              // )
                             ],
                           ),
                         ],

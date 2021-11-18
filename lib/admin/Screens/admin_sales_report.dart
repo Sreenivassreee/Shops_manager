@@ -1,7 +1,19 @@
 import 'package:shops_manager/export.dart';
 
-class AdminSalesReport extends StatelessWidget {
-  const AdminSalesReport({Key? key}) : super(key: key);
+class AdminSalesReport extends StatefulWidget {
+  var data;
+  AdminSalesReport({Key? key, this.data}) : super(key: key);
+
+  @override
+  State<AdminSalesReport> createState() => _AdminSalesReportState();
+}
+
+class _AdminSalesReportState extends State<AdminSalesReport> {
+  @override
+  void initState() {
+    print(widget.data);
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {

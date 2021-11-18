@@ -1,9 +1,7 @@
 import 'dart:math';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:share/share.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shops_manager/export.dart';
@@ -11,16 +9,17 @@ import 'package:shops_manager/global/widgets/appbar.dart';
 import 'package:shops_manager/globalcode/date.dart';
 import 'package:shops_manager/shop/shared-pref/shop-shared-pref.dart';
 import 'package:shops_manager/widgets/global/toast.dart';
-import 'package:more/more.dart';
 
-class TodaySales extends StatefulWidget {
-  const TodaySales({Key? key}) : super(key: key);
+class AllSales extends StatefulWidget {
+  var data;
+  AllSales({Key? key, this.data}) : super(key: key);
 
   @override
-  State<TodaySales> createState() => _TodaySalesState();
+  State<AllSales> createState() => _AllSalesState();
 }
 
-class _TodaySalesState extends State<TodaySales> {
+class _AllSalesState extends State<AllSales> {
+  Stream<QuerySnapshot>? productsStream;
   var shopName;
   var data;
   var d;
@@ -28,22 +27,35 @@ class _TodaySalesState extends State<TodaySales> {
   var salesProductData = [];
   var date;
   var isLoading = true;
-  var totalInternalBillingPriceToday = 0;
-  var displayBillingPriceToday = "";
+  DateTime? _selectedDate;
+
+  var totalInternalBillingPrice = 0;
+
+  var displayTotalInternalBillingPrice = "";
+  var totalMRP = 0;
+  var displayMRPToday = "";
+  var displayDate = '';
   @override
   initState() {
     super.initState();
     date = revGetDate();
+    displayDate = getSelectedDisplayDate(DateTime.now());
     getData();
     if (shopName == '') {
       show(context, "Something went wrong!");
-      logout();
     }
   }
 
   getData() async {
-    SharedPreferences p = await SharedPreferences.getInstance();
-    shopName = p.getString('shop-name');
+    shopName = widget.data['shopName'].toString().toLowerCase().trim();
+    setState(() {
+      salesProductData = [];
+      totalMRP = 0;
+      totalInternalBillingPrice = 0;
+      displayTotalInternalBillingPrice = "";
+      displayMRPToday = "";
+    });
+    print(widget.data);
     try {
       await FirebaseFirestore.instance
           .collection('shops')
@@ -55,8 +67,8 @@ class _TodaySalesState extends State<TodaySales> {
                 setState(() {
                   d = value.data();
                 }),
+                print(d)
               });
-
       d?.forEach((key, value) {
         salesProductData.add(d[key]);
       });
@@ -79,21 +91,63 @@ class _TodaySalesState extends State<TodaySales> {
       for (var j = 0; j < salesProductData[i].length; j++) {
         var tempPrice = salesProductData[i][j]['buy_products']
             ['now_internal_selling_price'];
-        totalInternalBillingPriceToday =
-            totalInternalBillingPriceToday + int.parse(tempPrice);
+        var tempmrp =
+            salesProductData[i][j]['buy_products']['now_mrp_selling_price'];
+        totalInternalBillingPrice =
+            totalInternalBillingPrice + int.parse(tempPrice);
+        totalMRP = totalMRP + int.parse(tempmrp);
       }
-      print(totalInternalBillingPriceToday);
+      print(totalInternalBillingPrice);
+      print(totalMRP);
     }
-    displayBillingPriceToday =
-        getMoney(money: totalInternalBillingPriceToday.toString());
+    displayTotalInternalBillingPrice =
+        getMoney(money: totalInternalBillingPrice.toString());
+    displayMRPToday = getMoney(money: totalMRP.toString());
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: app_bar(
-          title: 'TODAY SALES',
-          actionText: displayBillingPriceToday.toString()),
+      appBar: AppBar(
+        elevation: 0,
+        title: InkWell(
+          onTap: _pickDateDialog,
+          child: Text(
+            displayDate,
+            style: TextStyle(
+              fontSize: 20,
+              color: Colors.black,
+            ),
+          ),
+        ),
+        automaticallyImplyLeading: false,
+        actions: [
+          Container(
+            padding: EdgeInsets.only(right: 10),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Text(displayTotalInternalBillingPrice,
+                    style: TextStyle(
+                        fontSize: 20,
+                        color: Colors.green,
+                        fontWeight: FontWeight.bold)),
+                Text(
+                  displayMRPToday,
+                  style: TextStyle(
+                    fontSize: 15,
+                    color: Colors.black,
+                  ),
+                )
+              ],
+            ),
+          )
+        ],
+      ),
+      // app_bar(
+      //     title: getDetailsDate.toString(),
+      //     actionText: displayTotalInternalBillingPrice.toString()),
       body: Center(
         child: isLoading == true
             ? CircularProgressIndicator()
@@ -422,5 +476,34 @@ class _TodaySalesState extends State<TodaySales> {
               ),
       ),
     );
+  }
+
+  void _pickDateDialog() {
+    print("Calling");
+    showDatePicker(
+            context: context,
+            initialDate: DateTime.now(),
+            //which date will display when user open the picker
+            firstDate: DateTime(1950),
+            //what will be the previous supported year in picker
+            lastDate: DateTime
+                .now()) //what will be the up to supported date in picker
+        .then((pickedDate) {
+      //then usually do the future job
+      if (pickedDate == null) {
+        //if user tap cancel then this function will stop
+        return;
+      }
+      setState(() {
+        date = revGetBillDate(pickedDate);
+        displayDate = getSelectedDisplayDate(pickedDate);
+
+        print(pickedDate);
+        print(displayDate);
+        _selectedDate = pickedDate;
+        isLoading = true;
+      });
+      getData();
+    });
   }
 }

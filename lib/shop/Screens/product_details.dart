@@ -45,7 +45,7 @@ class _ProductDetailsState extends State<ProductDetails> {
         child: Column(
           children: [
             btn(
-              btnTitle: "SELE",
+              btnTitle: "SELL",
               action: () {
                 Navigator.push(
                   context,
