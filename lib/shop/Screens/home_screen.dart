@@ -23,25 +23,24 @@ class _HomepageState extends State<Homepage> {
   Stream<QuerySnapshot>? productsStream;
 
   @override
-  initState()  {
+  initState() {
     super.initState();
     getPref();
-    if(shopName==''){
+    if (shopName == '') {
       show(context, "Something went wrong!");
       logout();
     }
-
   }
 
   Future<bool> getPref() async {
     SharedPreferences p = await SharedPreferences.getInstance();
     setState(() {
-        shopName = p.getString('shop-name');
-        productsStream = FirebaseFirestore.instance
-            .collection('shops')
-            .doc(shopName)
-            .collection('products')
-            .snapshots();
+      shopName = p.getString('shop-name');
+      productsStream = FirebaseFirestore.instance
+          .collection('shops')
+          .doc(shopName)
+          .collection('products')
+          .snapshots();
     });
     //print("[Homepage Shop Name]" +shopName);
     return true;
@@ -49,9 +48,8 @@ class _HomepageState extends State<Homepage> {
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
-      appBar: app_bar(title: 'Stock'),
+      appBar: app_bar(title: 'BRANDS'),
       bottomSheet: Container(
           height: 120,
           child: Column(
@@ -59,7 +57,8 @@ class _HomepageState extends State<Homepage> {
               btn(
                 btnTitle: "TODAY SALES",
                 action: () {
-                  Navigator.push(context, MaterialPageRoute(builder: (_)=>TodaySales()));
+                  Navigator.push(
+                      context, MaterialPageRoute(builder: (_) => TodaySales()));
                 },
               ),
               Row(
@@ -72,8 +71,7 @@ class _HomepageState extends State<Homepage> {
                       Navigator.pushAndRemoveUntil(
                         context,
                         MaterialPageRoute(
-                          builder: (BuildContext context) =>
-                              LoginPage(),
+                          builder: (BuildContext context) => LoginPage(),
                         ),
                         ModalRoute.withName(''),
                       );
