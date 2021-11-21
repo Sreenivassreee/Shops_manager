@@ -11,11 +11,13 @@ import 'package:shops_manager/shop/models/cus.dart';
 
 class CFireBase {
   CollectionReference shops = FirebaseFirestore.instance.collection('shops');
+  CollectionReference global = FirebaseFirestore.instance.collection('global');
   var date = getDate();
+  var yesterdayDate;
   SellProduct(
       {customer,
       id,
-      toalPrice,
+      totalPrice,
       quantity,
       paymentMode,
       customerSellingPrice,
@@ -28,6 +30,7 @@ class CFireBase {
     SharedPreferences p = await SharedPreferences.getInstance();
 
     var shop = p.getString('shop-name');
+    var manager = p.getString('manager-name');
     await shops
         .doc(shop)
         .collection("products")
@@ -37,6 +40,7 @@ class CFireBase {
       if (documentSnapshot.exists) {
         DateTime dateToday = new DateTime.now();
         String date = dateToday.toString().substring(0, 10);
+
         //print(date);
         var productModel = documentSnapshot['product_model'] ?? "";
         var productRam = documentSnapshot['product_ram'] ?? "0";
@@ -46,6 +50,15 @@ class CFireBase {
         var productBrand = documentSnapshot['product_brand'] ?? "0";
         var lastUpdated = documentSnapshot['_last_updated'] ?? "None";
         var isDeleted = false;
+
+        //Used to update the data
+        var today_total_initernal_sales_price = 0;
+        var today_total_mrp_sales_price = 0;
+        var today_total_products_quantity = 0;
+        var yesterday_total_intenal_sales_price = 0;
+        var yesterday_total_mrp_sales_price = 0;
+        var yesterday_total_products_quantity = 0;
+
         try {
           isDeleted = documentSnapshot['_isDeleted'];
         } catch (e) {
@@ -65,7 +78,7 @@ class CFireBase {
                 await GenerateBill(
                         customer: customer,
                         id: id,
-                        toalPrice: toalPrice,
+                        totalPrice: totalPrice,
                         quantity: quantity,
                         paymentMode: paymentMode,
                         customerSellingPrice: customerSellingPrice,
@@ -107,9 +120,8 @@ class CFireBase {
                                                   customerSellingPrice,
                                               "now_payment_mode": paymentMode,
                                               "now_mrp_selling_total_price":
-                                                  toalPrice,
-                                              "now_sell_by_manager":
-                                                  "sell_by_manager",
+                                                  totalPrice,
+                                              "now_sell_by_manager": manager,
                                               "now_time_stamp": DateTime.now(),
                                               "now_storage": productStorage,
                                               "now_sell_by_shop": shop,
@@ -138,9 +150,155 @@ class CFireBase {
                                           }
                                         ])
                                       }, SetOptions(merge: true)).then(
-                                        (value) => {
-                                          status = generateBillReturn,
-                                          print("IM in Final")
+                                        (value) async => {
+                                          await global
+                                              .doc('dailyBills')
+                                              .collection(date)
+                                              .doc(shop)
+                                              .get()
+                                              .then(
+                                                (v) async => {
+                                                  today_total_initernal_sales_price =
+                                                      int.parse(
+                                                              internalSellingPrice) *
+                                                          int.parse(quantity),
+                                                  today_total_mrp_sales_price =
+                                                      int.parse(totalPrice),
+                                                  today_total_products_quantity =
+                                                      int.parse(quantity),
+                                                  if (v.exists)
+                                                    {
+                                                      print("V"),
+                                                      today_total_initernal_sales_price =
+                                                          today_total_initernal_sales_price +
+                                                              int.parse(v[
+                                                                  'today_total_initernal_sales_price']),
+                                                      today_total_mrp_sales_price =
+                                                          today_total_mrp_sales_price +
+                                                              int.parse(v[
+                                                                  'today_total_mrp_sales_price']),
+                                                      today_total_products_quantity =
+                                                          today_total_products_quantity +
+                                                              int.parse(v[
+                                                                  'today_total_products_quantity']),
+                                                      // yesterday_total_intenal_sales_price =
+                                                      //     yesterday_total_intenal_sales_price +
+                                                      //         int.parse(v[
+                                                      //             'yesterday_total_intenal_sales_price']),
+                                                      // yesterday_total_mrp_sales_price =
+                                                      //     yesterday_total_mrp_sales_price +
+                                                      //         int.parse(v[
+                                                      //             'yesterday_total_mrp_sales_price']),
+                                                      // today_total_initernal_sales_price =
+                                                      //     today_total_initernal_sales_price +
+                                                      //         int.parse(
+                                                      //                 internalSellingPrice) *
+                                                      //             int.parse(
+                                                      //                 quantity),
+                                                      // today_total_mrp_sales_price =
+                                                      //     today_total_mrp_sales_price +
+                                                      //         int.parse(
+                                                      //             totalPrice),
+                                                      // today_total_products_quantity =
+                                                      //     today_total_products_quantity +
+                                                      //         int.parse(
+                                                      //             quantity),
+                                                      await global
+                                                          .doc('dailyBills')
+                                                          .collection(date)
+                                                          .doc(shop)
+                                                          .set(
+                                                              {
+                                                            "today_total_initernal_sales_price":
+                                                                today_total_initernal_sales_price
+                                                                    .toString(),
+                                                            "today_total_mrp_sales_price":
+                                                                today_total_mrp_sales_price
+                                                                    .toString(),
+                                                            "today_total_products_quantity":
+                                                                today_total_products_quantity
+                                                                    .toString(),
+                                                            // "yesterday_total_intenal_sales_price":
+                                                            //     yesterday_total_intenal_sales_price,
+                                                            // "yesterday_total_mrp_sales_price":
+                                                            //     yesterday_total_mrp_sales_price,
+                                                            "_updated_at":
+                                                                DateTime.now(),
+                                                          },
+                                                              SetOptions(
+                                                                  merge:
+                                                                      true)).then(
+                                                              (v) => status =
+                                                                  generateBillReturn)
+                                                    }
+                                                  else
+                                                    {
+                                                      yesterdayDate = DateTime
+                                                              .now()
+                                                          .subtract(
+                                                              Duration(days: 1))
+                                                          .toString()
+                                                          .substring(0, 10),
+                                                      await global
+                                                          .doc('dailyBills')
+                                                          .collection(
+                                                              yesterdayDate)
+                                                          .doc(shop)
+                                                          .get()
+                                                          .then((v) async => {
+                                                                if (v.exists)
+                                                                  {
+                                                                    yesterday_total_intenal_sales_price =
+                                                                        int.parse(
+                                                                            v['today_total_initernal_sales_price']),
+                                                                    yesterday_total_mrp_sales_price =
+                                                                        int.parse(
+                                                                            v['today_total_mrp_sales_price']),
+                                                                    yesterday_total_products_quantity =
+                                                                        int.parse(
+                                                                            v['today_total_products_quantity']),
+                                                                  },
+                                                                await global
+                                                                    .doc(
+                                                                        'dailyBills')
+                                                                    .collection(
+                                                                        date)
+                                                                    .doc(shop)
+                                                                    .set({
+                                                                  "today_total_initernal_sales_price":
+                                                                      today_total_initernal_sales_price
+                                                                          .toString(),
+                                                                  "today_total_mrp_sales_price":
+                                                                      today_total_mrp_sales_price
+                                                                          .toString(),
+                                                                  "today_total_products_quantity":
+                                                                      today_total_products_quantity
+                                                                          .toString(),
+                                                                  "yesterday_total_intenal_sales_price":
+                                                                      yesterday_total_intenal_sales_price
+                                                                          .toString(),
+                                                                  "yesterday_total_mrp_sales_price":
+                                                                      yesterday_total_mrp_sales_price
+                                                                          .toString(),
+                                                                  "yesterday_total_products_quantity":
+                                                                      yesterday_total_products_quantity
+                                                                          .toString(),
+                                                                  'shop-name':
+                                                                      shop,
+                                                                  'manager-name':
+                                                                      manager,
+                                                                  "_updated_at":
+                                                                      DateTime
+                                                                          .now(),
+                                                                }, SetOptions(merge: true)).then((v) =>
+                                                                        status =
+                                                                            generateBillReturn)
+                                                              })
+                                                    },
+                                                  print("V"),
+                                                  print(v),
+                                                },
+                                              ),
                                         },
                                       )
                                     }
@@ -240,7 +398,7 @@ class CFireBase {
   Future<String> GenerateBill(
       {customer,
       id,
-      toalPrice,
+      totalPrice,
       quantity,
       paymentMode,
       customerSellingPrice,

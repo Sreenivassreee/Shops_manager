@@ -1,7 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:shops_manager/shop/Screens/navPage.dart';
+import 'package:shops_manager/navPage.dart';
 import 'package:shops_manager/widgets/global/toast.dart';
 import 'export.dart';
 import 'globalcode/date.dart';

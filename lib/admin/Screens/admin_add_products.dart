@@ -61,7 +61,8 @@ class _AdminAddProductsState extends State<AdminAddProducts> {
                                   Navigator.pushAndRemoveUntil(
                                       context,
                                       MaterialPageRoute(
-                                          builder: (_) => AdminHomepage()),
+                                          builder: (_) =>
+                                              AdminProductsHomeScreen()),
                                       (route) => false)
                                 }
                               else if (value == "NoShop")

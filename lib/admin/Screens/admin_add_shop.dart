@@ -170,7 +170,7 @@ class _AdminAddShopState extends State<AdminAddShop> {
                       Navigator.pushAndRemoveUntil(
                           context,
                           MaterialPageRoute(
-                            builder: (_) => AdminHomepage(),
+                            builder: (_) => AdminProductsHomeScreen(),
                           ),
                           (route) => false);
                     }

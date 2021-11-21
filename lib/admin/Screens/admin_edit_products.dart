@@ -62,8 +62,8 @@ class _AdminEditProductsState extends State<AdminEditProducts> {
                   });
                   //print("[price.text.isNotEmpty]" +
                   //    (!price.text.isNotEmpty).toString());
-                 // print("[quantity.text.isNotEmpty]" +
-                      //(!quantity.text.isNotEmpty).toString());
+                  // print("[quantity.text.isNotEmpty]" +
+                  //(!quantity.text.isNotEmpty).toString());
                   if (!price.text.isNotEmpty || !quantity.text.isNotEmpty) {
                     show(context, "Invalid info needed");
                     setState(() {
@@ -91,7 +91,8 @@ class _AdminEditProductsState extends State<AdminEditProducts> {
                                   Navigator.pushAndRemoveUntil(
                                       context,
                                       MaterialPageRoute(
-                                        builder: (_) => AdminHomepage(),
+                                        builder: (_) =>
+                                            AdminProductsHomeScreen(),
                                       ),
                                       (route) => false)
                                 }

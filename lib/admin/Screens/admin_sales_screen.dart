@@ -33,24 +33,24 @@ class _AdminSalesScreenState extends State<AdminSalesScreen> {
         title: TitleText(
           title: "SALES",
         ),
-        actions: [
-          Container(
-            margin: EdgeInsets.all(10),
-            child: CircleAvatar(
-              child: IconButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => AdminAddShop(),
-                    ),
-                  );
-                },
-                icon: Icon(Icons.add),
-              ),
-            ),
-          )
-        ],
+        // actions: [
+        //   Container(
+        //     margin: EdgeInsets.all(10),
+        //     child: CircleAvatar(
+        //       child: IconButton(
+        //         onPressed: () {
+        //           Navigator.push(
+        //             context,
+        //             MaterialPageRoute(
+        //               builder: (_) => AdminAddShop(),
+        //             ),
+        //           );
+        //         },
+        //         icon: Icon(Icons.add),
+        //       ),
+        //     ),
+        //   )
+        // ],
       ),
       body: StreamBuilder<QuerySnapshot>(
         stream: _usersStream,
@@ -108,7 +108,7 @@ class _AdminSalesScreenState extends State<AdminSalesScreen> {
                   );
                 },
                 child: Container(
-                  padding: EdgeInsets.symmetric(vertical: 1, horizontal: 5),
+                  padding: EdgeInsets.symmetric(vertical: 0, horizontal: 5),
                   child: Card(
                     shape: RoundedRectangleBorder(
                       side: BorderSide(color: Colors.white70, width: 1),

@@ -53,12 +53,11 @@ class _FinalAlertState extends State<FinalAlert> {
   final formatCurrency =
       NumberFormat.simpleCurrency(locale: Platform.localeName, name: 'INR');
   var transactionStatus = "";
-  var code = 100 + Random().nextInt(1100);
+  var code = 100 + Random().nextInt(999);
   var userCode = TextEditingController();
-  bool? isLoading;
+  bool isLoading = false;
   @override
   void initState() {
-    isLoading = false;
     print("[Code]" + code.toString());
     productModel = widget.eachProduct['product_model'] ?? "";
     productRam = widget.eachProduct['product_ram'] ?? "0";
@@ -72,67 +71,55 @@ class _FinalAlertState extends State<FinalAlert> {
   }
 
   @override
-  void dispose() {
-    super.dispose();
-    isLoading = false;
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: Colors.white,
-        // bottomNavigationBar: btn(
-        //   btnTitle: "PAID",
-        //   action: () async {
-        //     // Navigator.push(
-        //     //   context,
-        //     //   MaterialPageRoute(
-        //     //     builder: (BuildContext context) => Homepage(),
-        //     //   ),
-        //     // );
-        //   },
-        // ),
+      backgroundColor: Colors.white,
+      // bottomNavigationBar: btn(
+      //   btnTitle: "PAID",
+      //   action: () async {
+      //     // Navigator.push(
+      //     //   context,
+      //     //   MaterialPageRoute(
+      //     //     builder: (BuildContext context) => Homepage(),
+      //     //   ),
+      //     // );
+      //   },
+      // ),
 
-        body: (!isLoading!)
-            ? Container(
-                child: OtpScreen(
-                  title: code.toString(),
-                  subTitle: productBrand.toUpperCase() +
-                      "  " +
-                      toBeginningOfSentenceCase(productModel) +
-                      " " +
-                      productRam +
-                      "GB" +
-                      " " +
-                      productStorage +
-                      "GB" +
-                      "\n\n" +
-                      "  " +
-                      modefiedShowPrice +
-                      " /- ",
-                  otpLength: 3,
-                  validateOtp: validateOtp,
-                  routeCallback: moveToNextScreen,
-                  titleColor: Colors.black,
-                  themeColor: Colors.black,
-                ),
-              )
-            : Center(
-                child: CachedNetworkImage(
-                  imageUrl:
-                      "https://cdn.dribbble.com/users/733202/screenshots/15793600/media/e5a416d19d4c015287dfcada0040e5fb.gif",
-                  progressIndicatorBuilder: (context, url, downloadProgress) =>
-                      CircularProgressIndicator(
-                          value: downloadProgress.progress),
-                  errorWidget: (context, url, error) => Icon(Icons.error),
-                ),
-              )
-        // ],
-        // ),
-        //       ),
-        //     ],
-        //   ),
-        );
+      body: (isLoading == true)
+          ? Center(
+              child: CachedNetworkImage(
+                imageUrl:
+                    "https://cdn.dribbble.com/users/733202/screenshots/15793600/media/e5a416d19d4c015287dfcada0040e5fb.gif",
+                progressIndicatorBuilder: (context, url, downloadProgress) =>
+                    CircularProgressIndicator(value: downloadProgress.progress),
+                errorWidget: (context, url, error) => Icon(Icons.error),
+              ),
+            )
+          : Container(
+              child: OtpScreen(
+                title: code.toString(),
+                subTitle: productBrand.toUpperCase() +
+                    "  " +
+                    toBeginningOfSentenceCase(productModel) +
+                    " " +
+                    productRam +
+                    "GB" +
+                    " " +
+                    productStorage +
+                    "GB" +
+                    "\n\n" +
+                    "  " +
+                    modefiedShowPrice +
+                    " /- ",
+                otpLength: 3,
+                validateOtp: validateOtp,
+                routeCallback: moveToNextScreen,
+                titleColor: Colors.black,
+                themeColor: Colors.black,
+              ),
+            ),
+    );
   }
 
   Future<String> validateOtp(String otp) async {
@@ -144,7 +131,7 @@ class _FinalAlertState extends State<FinalAlert> {
       await cFire.SellProduct(
               customer: widget.customer,
               id: widget.id,
-              toalPrice: widget.totalPrice,
+              totalPrice: widget.totalPrice,
               quantity: widget.quantity.toString(),
               paymentMode: widget.paymentMode,
               customerSellingPrice: widget.customerSellingPrice,
@@ -175,6 +162,10 @@ class _FinalAlertState extends State<FinalAlert> {
                     print(v),
                   }
               });
+
+      setState(() {
+        isLoading = false;
+      });
       return "YES";
     } else {
       setState(() {

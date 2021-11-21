@@ -1,8 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:shops_manager/admin/Screens/admin_home_screen.dart';
+import 'package:shops_manager/admin/Screens/admin_products_home_screen.dart';
 import 'package:shops_manager/admin/firebase/fire.dart';
-import 'package:shops_manager/shop/Screens/navPage.dart';
+import 'package:shops_manager/navPage.dart';
 import 'package:shops_manager/shop/shared-pref/shop-shared-pref.dart';
 
 import 'package:shops_manager/widgets/btn.dart';

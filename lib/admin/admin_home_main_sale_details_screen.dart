@@ -22,24 +22,114 @@ class _AdminHomeMainSaleDetailsScreenState
   var todaySalesMRP = 0;
   var percentage = 0.0;
   var shopsLength = 0;
+  var todayProductQuantity = 0;
+  DateTime dateToday = new DateTime.now();
+  var todayTotalSalesInternal = 0;
+  var yesterDayTotalSalesInternal = 0;
+  var manager = "None";
+  var shop = "None";
+  var DataForCalculations;
 
+  var date;
+  var displayMRPToday = "";
+  var displayDate = '';
+  var isLoading = true;
+  DateTime? _selectedDate;
   Color statusColor = Colors.black;
   Stream<QuerySnapshot>? _usersStream;
   @override
   void initState() {
+    displayDate = getSelectedDisplayDate(DateTime.now());
+    String date = dateToday.toString().substring(0, 10);
     _usersStream = FirebaseFirestore.instance
-        .collection('globalTest')
-        .doc('dayBills')
-        .collection('12-12-1999')
+        .collection('global')
+        .doc('dailyBills')
+        .collection(date)
         .snapshots();
 
-    print(percentage);
+    getData();
+
     super.initState();
+  }
+
+  getData() {
+    Future.delayed(const Duration(milliseconds: 2000), () {
+      setState(() {
+        // print(DataForCalculations);
+        var temp1 = 0;
+        var temp2 = 0;
+        for (var i = 0; i < DataForCalculations?.length; i++) {
+          temp1 = temp1 +
+              int.parse(
+                  DataForCalculations[i]['today_total_initernal_sales_price']);
+          temp2 = temp2 +
+              int.parse(DataForCalculations[i]
+                  ['yesterday_total_intenal_sales_price']);
+        }
+        setState(() {
+          todayTotalSalesInternal = temp1;
+          yesterDayTotalSalesInternal = temp2;
+        });
+      });
+    });
+  }
+
+  getChangedDateData() {
+    _usersStream = FirebaseFirestore.instance
+        .collection('global')
+        .doc('dailyBills')
+        .collection(date)
+        .snapshots();
+    getData();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        elevation: 0,
+        title: Container(
+          padding: EdgeInsets.only(right: 10),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Text("${getMoney(money: todayTotalSalesInternal.toString())}",
+                  style: TextStyle(
+                      fontSize: 30,
+                      color: Colors.black,
+                      fontWeight: FontWeight.bold)),
+            ],
+          ),
+        ),
+        automaticallyImplyLeading: false,
+        actions: [
+          Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                InkWell(
+                  onTap: _pickDateDialog,
+                  child: Text(
+                    displayDate,
+                    style: TextStyle(
+                      fontSize: 10,
+                      color: Colors.black,
+                    ),
+                  ),
+                ),
+                Text(
+                  "${getMoney(money: yesterDayTotalSalesInternal.toString())}",
+                  style: TextStyle(
+                    fontSize: 10,
+                    color: Colors.black,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
       body: StreamBuilder<QuerySnapshot>(
         stream: _usersStream,
         builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
@@ -51,8 +141,7 @@ class _AdminHomeMainSaleDetailsScreenState
             return cuperLoading();
           }
           if (snapshot.hasData) {
-            // shopsLength = snapshot.data?.docs.length ?? 0;
-            print("Data");
+            DataForCalculations = snapshot.data?.docs;
           }
 
           return Center(
@@ -73,11 +162,17 @@ class _AdminHomeMainSaleDetailsScreenState
                         int.parse(data['yesterday_total_mrp_sales_price']);
                     todaySalesMRP =
                         int.parse(data['today_total_mrp_sales_price']);
+                    todayProductQuantity =
+                        int.parse(data['today_total_products_quantity']);
+
                     statusColor = yesterdaySalesInternal < todaySalesInternal
                         ? Colors.green
                         : Colors.red;
                     percentage = (double.parse(todaySalesInternal.toString()) /
                         double.parse(yesterdaySalesInternal.toString()));
+
+                    manager = data['manager-name'] ?? "None";
+                    shop = data['shop-name'] ?? "None";
 
                     if (percentage > 1) {
                       percentage = 1.0;
@@ -105,6 +200,10 @@ class _AdminHomeMainSaleDetailsScreenState
                     child: Container(
                       padding: EdgeInsets.symmetric(vertical: 1, horizontal: 5),
                       child: Card(
+                        shape: RoundedRectangleBorder(
+                          side: BorderSide(color: Colors.white70, width: 1),
+                          borderRadius: BorderRadius.circular(15),
+                        ),
                         elevation: 0,
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
@@ -204,8 +303,8 @@ class _AdminHomeMainSaleDetailsScreenState
                                         crossAxisAlignment:
                                             CrossAxisAlignment.center,
                                         children: [
-                                          Text("Shop 1"),
-                                          Text("Sreenivas K"),
+                                          Text(shop),
+                                          Text(manager),
                                         ],
                                       ),
                                     ),
@@ -235,7 +334,8 @@ class _AdminHomeMainSaleDetailsScreenState
                                                 ),
                                                 detailRow(
                                                     title: "Products",
-                                                    value: "10"),
+                                                    value:
+                                                        "$todayProductQuantity"),
                                               ],
                                             ),
                                           ),
@@ -272,6 +372,35 @@ class _AdminHomeMainSaleDetailsScreenState
         ],
       ),
     );
+  }
+
+  void _pickDateDialog() {
+    // print("Calling");
+    showDatePicker(
+            context: context,
+            initialDate: DateTime.now(),
+            //which date will display when user open the picker
+            firstDate: DateTime(1950),
+            //what will be the previous supported year in picker
+            lastDate: DateTime
+                .now()) //what will be the up to supported date in picker
+        .then((pickedDate) {
+      //then usually do the future job
+      if (pickedDate == null) {
+        //if user tap cancel then this function will stop
+        return;
+      }
+      setState(() {
+        date = revGetBillDate(pickedDate);
+        displayDate = getSelectedDisplayDate(pickedDate);
+
+        // print(pickedDate);
+        // print(displayDate);
+        _selectedDate = pickedDate;
+        isLoading = true;
+      });
+      getChangedDateData();
+    });
   }
 
   Widget smallDetailRow({title, value}) {

@@ -3,14 +3,15 @@ import 'package:shops_manager/export.dart';
 import 'package:shops_manager/shop/shared-pref/shop-shared-pref.dart';
 import 'package:shops_manager/widgets/global/cuperLoading.dart';
 
-class AdminHomepage extends StatefulWidget {
-  const AdminHomepage({Key? key}) : super(key: key);
+class AdminProductsHomeScreen extends StatefulWidget {
+  const AdminProductsHomeScreen({Key? key}) : super(key: key);
 
   @override
-  State<AdminHomepage> createState() => _AdminHomepageState();
+  State<AdminProductsHomeScreen> createState() =>
+      _AdminProductsHomeScreenState();
 }
 
-class _AdminHomepageState extends State<AdminHomepage> {
+class _AdminProductsHomeScreenState extends State<AdminProductsHomeScreen> {
   final Stream<QuerySnapshot> _usersStream =
       FirebaseFirestore.instance.collection('shops').snapshots();
   @override
@@ -30,24 +31,24 @@ class _AdminHomepageState extends State<AdminHomepage> {
         title: TitleText(
           title: "SHOPS",
         ),
-        actions: [
-          Container(
-            margin: EdgeInsets.all(10),
-            child: CircleAvatar(
-              child: IconButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => AdminAddShop(),
-                    ),
-                  );
-                },
-                icon: Icon(Icons.add),
-              ),
-            ),
-          )
-        ],
+        // actions: [
+        //   Container(
+        //     margin: EdgeInsets.all(10),
+        //     child: CircleAvatar(
+        //       child: IconButton(
+        //         onPressed: () {
+        //           Navigator.push(
+        //             context,
+        //             MaterialPageRoute(
+        //               builder: (_) => AdminAddShop(),
+        //             ),
+        //           );
+        //         },
+        //         icon: Icon(Icons.add),
+        //       ),
+        //     ),
+        //   )
+        // ],
       ),
       body: StreamBuilder<QuerySnapshot>(
         stream: _usersStream,

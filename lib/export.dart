@@ -20,7 +20,7 @@ export 'package:shops_manager/shop/Screens/send_to_another_quantity.dart';
 export 'package:shops_manager/shop/Screens/accept_exchange.dart';
 
 // Admin
-export 'package:shops_manager/admin/Screens/admin_home_screen.dart';
+export 'package:shops_manager/admin/Screens/admin_products_home_screen.dart';
 export 'package:shops_manager/admin/Screens/admin_stock_product_screen.dart';
 
 export 'package:cloud_firestore/cloud_firestore.dart';

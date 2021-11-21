@@ -31,6 +31,7 @@ class _AllSalesState extends State<AllSales> {
   var totalMRP = 0;
   var displayMRPToday = "";
   var displayDate = '';
+
   @override
   initState() {
     super.initState();
