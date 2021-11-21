@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:shops_manager/admin/Screens/admin_sales_screen.dart';
-import 'package:shops_manager/admin/main_sale_details_screen.dart';
+import 'package:shops_manager/admin/admin_home_main_sale_details_screen.dart';
 
 import '../../export.dart';
 
@@ -14,7 +14,7 @@ class _NavScreenState extends State<NavScreen> {
   PageController? _pageController;
 
   List<Widget> tabPages = [
-    MainSaleDetailsScreen(),
+    AdminHomeMainSaleDetailsScreen(),
     AdminHomepage(),
     AdminSalesScreen(),
     AdminHomepage(),

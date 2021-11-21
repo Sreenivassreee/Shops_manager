@@ -58,98 +58,112 @@ class CFireBase {
           status = "lastUpdated Error ";
           //print("Error");
         }
-        if (isDeleted == false) {
-          if (int.parse(productQuantity) > 0) {
-            if (int.parse(productQuantity) >= int.parse(quantity)) {
-              await GenerateBill(
-                      customer: customer,
-                      id: id,
-                      toalPrice: toalPrice,
-                      quantity: quantity,
-                      paymentMode: paymentMode,
-                      customerSellingPrice: customerSellingPrice,
-                      internalSellingPrice: internalSellingPrice,
-                      documentSnapshot: documentSnapshot)
-                  .then((generateBillReturn) async => {
-                        print("[CustomerFirebse 103 Value]" +
-                            generateBillReturn.toString()),
-                        if (generateBillReturn.toString().length >= 20)
-                          {
-                            await AfterSellingUpdateQuantity(
-                                    id: id,
-                                    sellingQuantity: quantity,
-                                    productQuantity: productQuantity,
-                                    quantity: int.parse(productQuantity) -
-                                        int.parse(quantity),
-                                    customer: customer)
-                                .then(
-                              (afterSellingUpdateQuantityReturn) async => {
-                                if (afterSellingUpdateQuantityReturn == "Done")
-                                  {
-                                    status = "AfterSellingUpdate",
-                                    await shops
-                                        .doc(shop)
-                                        .collection('sells')
-                                        .doc(date)
-                                        .set({
-                                      customer.mobile: FieldValue.arrayUnion([
-                                        {
-                                          "customer_details": {
-                                            "name": customer.name,
-                                            "mobile": customer.mobile,
-                                            "mail": customer.mail,
-                                            "address": customer.address,
-                                          },
-                                          "buy_products": {
-                                            "now_mrp_selling_price":
-                                                customerSellingPrice,
-                                            "now_payment_mode": paymentMode,
-                                            "now_total_price": toalPrice,
-                                            "now_sell_by_manager":
-                                                "sell_by_manager",
-                                            "now_time_stamp": DateTime.now(),
-                                            "now_storage": productStorage,
-                                            "now_sell_by_shop": shop,
-                                            "now_quantity": quantity,
-                                            "now_model": productModel,
-                                            "now__id": id,
-                                            "now_bill_url": generateBillReturn,
-                                            "now_brand": productBrand,
-                                            "now_ram": productRam,
-                                            "now_internal_selling_price":
-                                                internalSellingPrice
-                                          },
-                                          "_past_product_details": {
-                                            "_past_quantity": productQuantity,
-                                            "_past_last_updated": lastUpdated,
-                                            "_past_model": productModel,
-                                            "_past_storage": productStorage,
-                                            "_past_brand": productBrand,
-                                            "_past_ram": productRam,
-                                          },
-                                        }
-                                      ])
-                                    }, SetOptions(merge: true)).then(
-                                      (value) => {status = generateBillReturn},
-                                    )
-                                  }
-                                else
-                                  {status = afterSellingUpdateQuantityReturn}
-                              },
-                            )
-                          }
-                        else
-                          {status = "Error Uploading the pdf"}
-                      });
+        try {
+          if (isDeleted == false) {
+            if (int.parse(productQuantity) > 0) {
+              if (int.parse(productQuantity) >= int.parse(quantity)) {
+                await GenerateBill(
+                        customer: customer,
+                        id: id,
+                        toalPrice: toalPrice,
+                        quantity: quantity,
+                        paymentMode: paymentMode,
+                        customerSellingPrice: customerSellingPrice,
+                        internalSellingPrice: internalSellingPrice,
+                        documentSnapshot: documentSnapshot)
+                    .then((generateBillReturn) async => {
+                          print("[CustomerFirebse 103 Value]" +
+                              generateBillReturn.toString()),
+                          if (generateBillReturn.toString().length >= 20)
+                            {
+                              await AfterSellingUpdateQuantity(
+                                      id: id,
+                                      sellingQuantity: quantity,
+                                      productQuantity: productQuantity,
+                                      quantity: int.parse(productQuantity) -
+                                          int.parse(quantity),
+                                      customer: customer)
+                                  .then(
+                                (afterSellingUpdateQuantityReturn) async => {
+                                  if (afterSellingUpdateQuantityReturn ==
+                                      "Done")
+                                    {
+                                      status = "AfterSellingUpdate",
+                                      await shops
+                                          .doc(shop)
+                                          .collection('sells')
+                                          .doc(date)
+                                          .set({
+                                        customer.mobile: FieldValue.arrayUnion([
+                                          {
+                                            "customer_details": {
+                                              "name": customer.name,
+                                              "mobile": customer.mobile,
+                                              "mail": customer.mail,
+                                              "address": customer.address,
+                                            },
+                                            "buy_products": {
+                                              "now_mrp_selling_price_per_piece":
+                                                  customerSellingPrice,
+                                              "now_payment_mode": paymentMode,
+                                              "now_mrp_selling_total_price":
+                                                  toalPrice,
+                                              "now_sell_by_manager":
+                                                  "sell_by_manager",
+                                              "now_time_stamp": DateTime.now(),
+                                              "now_storage": productStorage,
+                                              "now_sell_by_shop": shop,
+                                              "now_quantity": quantity,
+                                              "now_model": productModel,
+                                              "now__id": id,
+                                              "now_bill_url":
+                                                  generateBillReturn,
+                                              "now_brand": productBrand,
+                                              "now_ram": productRam,
+                                              "now_internal_selling_price_per_piece":
+                                                  internalSellingPrice,
+                                              "now_internal_selling_price_total":
+                                                  (int.parse(internalSellingPrice) *
+                                                          int.parse(quantity))
+                                                      .toString()
+                                            },
+                                            "_past_product_details": {
+                                              "_past_quantity": productQuantity,
+                                              "_past_last_updated": lastUpdated,
+                                              "_past_model": productModel,
+                                              "_past_storage": productStorage,
+                                              "_past_brand": productBrand,
+                                              "_past_ram": productRam,
+                                            },
+                                          }
+                                        ])
+                                      }, SetOptions(merge: true)).then(
+                                        (value) => {
+                                          status = generateBillReturn,
+                                          print("IM in Final")
+                                        },
+                                      )
+                                    }
+                                  else
+                                    {status = afterSellingUpdateQuantityReturn}
+                                },
+                              )
+                            }
+                          else
+                            {status = "Error Uploading the pdf"}
+                        });
+              } else {
+                //print("Here");
+                status = "Required Stock Not Available";
+              }
             } else {
-              //print("Here");
-              status = "Required Stock Not Available";
+              status = "No Stock Available";
             }
           } else {
-            status = "No Stock Available";
+            status = "Item Deleted";
           }
-        } else {
-          status = "Item Deleted";
+        } catch (e) {
+          status = "Unknown Error ";
         }
       } else {
         status = "Invalid Product Id";
@@ -170,7 +184,8 @@ class CFireBase {
     var status = '';
     SharedPreferences p = await SharedPreferences.getInstance();
     var shop = p.getString('shop-name');
-    var manager=p.getString('shop-manager');
+    var manager = p.getString('manager-name');
+    print("[manager]" + manager.toString());
     try {
       print("2");
       await shops
@@ -182,7 +197,7 @@ class CFireBase {
             "_last_updated": FieldValue.arrayUnion([
               {
                 'updated_by': manager,
-                'updated_shop':shop,
+                'updated_shop': shop,
                 'changes': "Selled to " +
                     customer.name +
                     " => " +
@@ -201,17 +216,15 @@ class CFireBase {
                     " ) " +
                     " ) " +
                     " ) ",
-                'updated_at': DateTime.now().toString(),
+                'updated_at': DateTime.now(),
               }
             ])
           })
           .then((value) => {
-
                 status = "Done",
               })
           .catchError(
             (error) {
-
               status = "Error";
             },
           );

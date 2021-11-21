@@ -142,8 +142,8 @@ class _SaleProductSucessState extends State<SaleProductSucess> {
                       SucessInfoCard(
                         icon: Icons.share,
                         title: "Open",
-                        tap: () async{
-                          await OpenFile.open(widget.billURL);
+                        tap: () async {
+                          await OpenFile.open(widget.billURL ?? "");
                         },
                       ),
                     ],

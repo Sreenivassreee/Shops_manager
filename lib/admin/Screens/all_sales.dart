@@ -1,13 +1,9 @@
-import 'dart:math';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:share/share.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shops_manager/export.dart';
-import 'package:shops_manager/global/widgets/appbar.dart';
 import 'package:shops_manager/globalcode/date.dart';
-import 'package:shops_manager/shop/shared-pref/shop-shared-pref.dart';
 import 'package:shops_manager/widgets/global/toast.dart';
 
 class AllSales extends StatefulWidget {
@@ -55,7 +51,7 @@ class _AllSalesState extends State<AllSales> {
       displayTotalInternalBillingPrice = "";
       displayMRPToday = "";
     });
-    print(widget.data);
+    // print(widget.data);
     try {
       await FirebaseFirestore.instance
           .collection('shops')
@@ -67,7 +63,7 @@ class _AllSalesState extends State<AllSales> {
                 setState(() {
                   d = value.data();
                 }),
-                print(d)
+                // print(d)
               });
       d?.forEach((key, value) {
         salesProductData.add(d[key]);
@@ -78,10 +74,8 @@ class _AllSalesState extends State<AllSales> {
           isLoading = false;
         });
       }
-
-      // print(salesProductData);
     } catch (e) {
-      // print(e);
+      print(e);
       show(context, "Error");
     }
   }
@@ -90,15 +84,15 @@ class _AllSalesState extends State<AllSales> {
     for (var i = 0; i < salesProductData.length; i++) {
       for (var j = 0; j < salesProductData[i].length; j++) {
         var tempPrice = salesProductData[i][j]['buy_products']
-            ['now_internal_selling_price'];
-        var tempmrp =
-            salesProductData[i][j]['buy_products']['now_mrp_selling_price'];
+            ['now_internal_selling_price_total'];
         totalInternalBillingPrice =
             totalInternalBillingPrice + int.parse(tempPrice);
+        var tempmrp = salesProductData[i][j]['buy_products']
+            ['now_mrp_selling_total_price'];
         totalMRP = totalMRP + int.parse(tempmrp);
       }
-      print(totalInternalBillingPrice);
-      print(totalMRP);
+      // print(totalInternalBillingPrice);
+      // print(totalMRP);
     }
     displayTotalInternalBillingPrice =
         getMoney(money: totalInternalBillingPrice.toString());
@@ -154,332 +148,332 @@ class _AllSalesState extends State<AllSales> {
             : Container(
                 alignment: Alignment.topCenter,
                 child: ListView.builder(
-                    shrinkWrap: true,
-                    itemCount: salesProductData.length,
-                    itemBuilder: (context, mi) {
-                      var innerCount = salesProductData[mi].length;
-                      var h = (innerCount * 130) + 70;
-                      var name = salesProductData[mi][0]['customer_details']
-                              ['name']
-                          .toString()
-                          .toUpperCase();
-                      var mobile = salesProductData[mi][0]['customer_details']
-                              ['mobile']
-                          .toUpperCase();
-                      return Padding(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 5, vertical: 2),
-                        child: Card(
-                          shape: RoundedRectangleBorder(
-                            side: BorderSide(color: Colors.white70, width: 1),
-                            borderRadius: BorderRadius.circular(15),
-                          ),
-                          elevation: 0,
-                          child: Container(
-                            height: h.toDouble(),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 20, vertical: 10),
-                                  child: Row(
-                                    children: [
-                                      CircleAvatar(
-                                        radius: 20,
-                                        child: Text(
-                                          name[0],
-                                          style: TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                              color: Colors.black),
-                                        ),
-                                        backgroundColor: Colors.indigo[50],
+                  shrinkWrap: true,
+                  itemCount: salesProductData.length,
+                  itemBuilder: (context, mi) {
+                    var innerCount = salesProductData[mi].length;
+                    var h = (innerCount * 130) + 70;
+                    var name = salesProductData[mi][0]['customer_details']
+                            ['name']
+                        .toString()
+                        .toUpperCase();
+                    var mobile = salesProductData[mi][0]['customer_details']
+                            ['mobile']
+                        .toString()
+                        .toUpperCase();
+
+                    return Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 5, vertical: 2),
+                      child: Card(
+                        shape: RoundedRectangleBorder(
+                          side: BorderSide(color: Colors.white70, width: 1),
+                          borderRadius: BorderRadius.circular(15),
+                        ),
+                        elevation: 0,
+                        child: Container(
+                          height: h.toDouble(),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 20, vertical: 10),
+                                child: Row(
+                                  children: [
+                                    CircleAvatar(
+                                      radius: 20,
+                                      child: Text(
+                                        name[0],
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.black),
                                       ),
-                                      SizedBox(
-                                        width: 20,
-                                      ),
-                                      Column(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.start,
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Text(name),
-                                          SizedBox(height: 5),
-                                          Text(mobile),
-                                        ],
-                                      )
-                                    ],
-                                  ),
+                                      backgroundColor: Colors.indigo[50],
+                                    ),
+                                    SizedBox(
+                                      width: 20,
+                                    ),
+                                    Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(name),
+                                        SizedBox(height: 5),
+                                        Text(mobile),
+                                      ],
+                                    )
+                                  ],
                                 ),
-                                Flexible(
-                                  child: Container(
-                                    child: ListView.builder(
-                                      shrinkWrap: true,
-                                      physics: NeverScrollableScrollPhysics(),
-                                      primary: false,
-                                      itemCount: innerCount,
-                                      itemBuilder: (context, i) {
-                                        var brand = salesProductData[mi][i]
-                                                        ['buy_products']
-                                                    ['now_brand']
-                                                .toUpperCase() ??
-                                            "None";
-                                        var model = salesProductData[mi][i]
-                                                        ['buy_products']
-                                                    ['now_model']
-                                                .toUpperCase() ??
-                                            "None";
-                                        var ram = salesProductData[mi][i]
-                                                    ['buy_products']['now_ram']
-                                                .toUpperCase() ??
-                                            "None";
-                                        var storage = salesProductData[mi][i]
-                                                        ['buy_products']
-                                                    ['now_storage']
-                                                .toUpperCase() ??
-                                            "None";
-                                        var id = salesProductData[mi][i]
-                                            ['buy_products']['now__id'];
-                                        var mrp = salesProductData[mi][i]
-                                                        ['buy_products']
-                                                    ['now_mrp_selling_price']
-                                                .toUpperCase() ??
-                                            "None";
+                              ),
+                              Flexible(
+                                child: Container(
+                                  child: ListView.builder(
+                                    shrinkWrap: true,
+                                    physics: NeverScrollableScrollPhysics(),
+                                    primary: false,
+                                    itemCount: innerCount,
+                                    itemBuilder: (context, i) {
+                                      var brand = salesProductData[mi][i]
+                                              ['buy_products']['now_brand']
+                                          .toString()
+                                          .toUpperCase();
+                                      var model = salesProductData[mi][i]
+                                              ['buy_products']['now_model']
+                                          .toString()
+                                          .toUpperCase();
+                                      var ram = salesProductData[mi][i]
+                                              ['buy_products']['now_ram']
+                                          .toString()
+                                          .toUpperCase();
+                                      var storage = salesProductData[mi][i]
+                                              ['buy_products']['now_storage']
+                                          .toString()
+                                          .toUpperCase();
+                                      var id = salesProductData[mi][i]
+                                              ['buy_products']['now__id']
+                                          .toString()
+                                          .toUpperCase();
+                                      var mrp = salesProductData[mi][i]
+                                                  ['buy_products'][
+                                              'now_mrp_selling_price_per_piece']
+                                          .toString()
+                                          .toUpperCase();
 
-                                        var internalPricing = salesProductData[
-                                                        mi][i]['buy_products'][
-                                                    'now_internal_selling_price']
-                                                .toUpperCase() ??
-                                            "None";
-                                        var billURL = salesProductData[mi][i]
-                                                        ['buy_products']
-                                                    ['now_bill_url']
-                                                .toUpperCase() ??
-                                            "None";
+                                      var internalPricing = salesProductData[mi]
+                                                  [i]['buy_products'][
+                                              'now_internal_selling_price_per_piece']
+                                          .toString()
+                                          .toUpperCase();
+                                      var billURL = salesProductData[mi][i]
+                                              ['buy_products']['now_bill_url']
+                                          .toString()
+                                          .toUpperCase();
+                                      var quantity = salesProductData[mi][i]
+                                              ['buy_products']['now_quantity']
+                                          .toString()
+                                          .toUpperCase();
+                                      var time = salesProductData[mi][i]
+                                          ['buy_products']['now_time_stamp'];
+                                      var timeStamp = getTimeStamp(time: time);
+                                      var displaytime = timeStamp.split(", ");
 
-                                        var quantity = salesProductData[mi][i]
-                                                        ['buy_products']
-                                                    ['now_quantity']
-                                                .toUpperCase() ??
-                                            "None";
-                                        var time = salesProductData[mi][i]
-                                            ['buy_products']['now_time_stamp'];
-                                        var timeStamp =
-                                            getTimeStamp(time: time);
-
-                                        return Padding(
-                                          padding: const EdgeInsets.symmetric(
-                                            horizontal: 5,
+                                      return Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                          horizontal: 5,
+                                        ),
+                                        child: Card(
+                                          shape: RoundedRectangleBorder(
+                                            side: BorderSide(
+                                                color: Colors.black12,
+                                                width: 1),
+                                            borderRadius:
+                                                BorderRadius.circular(10),
                                           ),
-                                          child: Card(
-                                            shape: RoundedRectangleBorder(
-                                              side: BorderSide(
-                                                  color: Colors.black12,
-                                                  width: 1),
-                                              borderRadius:
-                                                  BorderRadius.circular(10),
-                                            ),
-                                            // color: Colors.indigo[50],
-                                            elevation: 0,
+                                          // color: Colors.indigo[50],
+                                          elevation: 0,
 
-                                            child: Padding(
-                                              padding: const EdgeInsets.only(
-                                                  top: 0.0,
-                                                  left: 10.0,
-                                                  bottom: 0.0),
-                                              child: Column(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
-                                                children: [
-                                                  Row(
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .spaceBetween,
-                                                    crossAxisAlignment:
-                                                        CrossAxisAlignment
-                                                            .center,
-                                                    children: [
-                                                      Column(
-                                                        crossAxisAlignment:
-                                                            CrossAxisAlignment
-                                                                .start,
+                                          child: Padding(
+                                            padding: const EdgeInsets.only(
+                                                top: 0.0,
+                                                left: 10.0,
+                                                bottom: 0.0),
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment
+                                                          .spaceBetween,
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.center,
+                                                  children: [
+                                                    Column(
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .start,
+                                                      children: [
+                                                        SizedBox(height: 5),
+                                                        Text(
+                                                          "$brand",
+                                                        ),
+                                                        SizedBox(height: 5),
+                                                        Text(
+                                                          "$model $ram $storage ",
+                                                        ),
+                                                        SizedBox(height: 20),
+                                                        Container(
+                                                          decoration:
+                                                              new BoxDecoration(
+                                                            color: Colors
+                                                                .indigo[50],
+                                                            shape: BoxShape
+                                                                .rectangle,
+                                                            borderRadius:
+                                                                BorderRadius.all(
+                                                                    Radius.circular(
+                                                                        10.0)),
+                                                            border: Border.all(
+                                                                width: 1.0,
+                                                                color: Colors
+                                                                    .white),
+                                                          ),
+                                                          padding:
+                                                              EdgeInsets.all(4),
+                                                          // color: Colors.indigo[50],
+                                                          child: Text(
+                                                            "$id",
+                                                            style: TextStyle(
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold),
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                    Padding(
+                                                      padding:
+                                                          const EdgeInsets.all(
+                                                              5.0),
+                                                      child: Row(
                                                         children: [
-                                                          SizedBox(height: 5),
-                                                          Text(
-                                                            "$brand",
+                                                          Column(
+                                                            mainAxisAlignment:
+                                                                MainAxisAlignment
+                                                                    .spaceBetween,
+                                                            crossAxisAlignment:
+                                                                CrossAxisAlignment
+                                                                    .end,
+                                                            children: [
+                                                              Text(
+                                                                "₹$internalPricing",
+                                                                style: TextStyle(
+                                                                    fontSize:
+                                                                        20),
+                                                              ),
+                                                              SizedBox(
+                                                                height: 5,
+                                                              ),
+                                                              Text(
+                                                                "₹$mrp",
+                                                                style: TextStyle(
+                                                                    fontSize:
+                                                                        12),
+                                                              ),
+                                                              SizedBox(
+                                                                height: 20,
+                                                              ),
+                                                              Text(displaytime[
+                                                                  0]),
+                                                              Text(displaytime[
+                                                                  1]),
+                                                            ],
                                                           ),
-                                                          SizedBox(height: 5),
-                                                          Text(
-                                                            "$model $ram $storage ",
-                                                          ),
-                                                          SizedBox(height: 20),
                                                           Container(
-                                                            decoration:
-                                                                new BoxDecoration(
-                                                              color: Colors
-                                                                  .indigo[50],
-                                                              shape: BoxShape
-                                                                  .rectangle,
-                                                              borderRadius: BorderRadius
-                                                                  .all(Radius
-                                                                      .circular(
-                                                                          10.0)),
-                                                              border: Border.all(
-                                                                  width: 1.0,
-                                                                  color: Colors
-                                                                      .white),
-                                                            ),
-                                                            padding:
-                                                                EdgeInsets.all(
-                                                                    4),
-                                                            // color: Colors.indigo[50],
-                                                            child: Text(
-                                                              "$id",
-                                                              style: TextStyle(
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .bold),
-                                                            ),
+                                                            margin:
+                                                                EdgeInsets.only(
+                                                                    left: 10),
+                                                            height: 90,
+                                                            width: 1.5,
+                                                            color: Colors.white,
                                                           ),
-                                                        ],
-                                                      ),
-                                                      Padding(
-                                                        padding:
-                                                            const EdgeInsets
-                                                                .all(5.0),
-                                                        child: Row(
-                                                          children: [
-                                                            Column(
+                                                          Container(
+                                                            margin:
+                                                                EdgeInsets.only(
+                                                                    left: 1),
+                                                            padding:
+                                                                EdgeInsets.only(
+                                                                    left: 5),
+                                                            child: Column(
+                                                              crossAxisAlignment:
+                                                                  CrossAxisAlignment
+                                                                      .center,
                                                               mainAxisAlignment:
                                                                   MainAxisAlignment
                                                                       .spaceBetween,
-                                                              crossAxisAlignment:
-                                                                  CrossAxisAlignment
-                                                                      .end,
                                                               children: [
-                                                                Text(
-                                                                  "₹$internalPricing",
-                                                                  style: TextStyle(
-                                                                      fontSize:
-                                                                          20),
+                                                                CircleAvatar(
+                                                                  radius: 15,
+                                                                  backgroundColor:
+                                                                      Colors.indigo[
+                                                                          50],
+                                                                  child: Text(
+                                                                    "$quantity",
+                                                                    style: TextStyle(
+                                                                        color: Colors
+                                                                            .green,
+                                                                        fontWeight:
+                                                                            FontWeight.bold),
+                                                                  ),
+                                                                ),
+                                                                Container(
+                                                                  child: SizedBox(
+                                                                      height:
+                                                                          10),
                                                                 ),
                                                                 SizedBox(
-                                                                  height: 5,
-                                                                ),
-                                                                Text(
-                                                                  "₹$mrp",
-                                                                  style: TextStyle(
-                                                                      fontSize:
-                                                                          12),
-                                                                ),
-                                                                SizedBox(
-                                                                  height: 20,
-                                                                ),
-                                                                Text(timeStamp),
-                                                              ],
-                                                            ),
-                                                            Container(
-                                                              margin: EdgeInsets
-                                                                  .only(
-                                                                      left: 10),
-                                                              height: 90,
-                                                              width: 1.5,
-                                                              color:
-                                                                  Colors.white,
-                                                            ),
-                                                            Container(
-                                                              margin: EdgeInsets
-                                                                  .only(
-                                                                      left: 1),
-                                                              padding: EdgeInsets
-                                                                  .only(
-                                                                      left: 5),
-                                                              child: Column(
-                                                                crossAxisAlignment:
-                                                                    CrossAxisAlignment
-                                                                        .center,
-                                                                mainAxisAlignment:
-                                                                    MainAxisAlignment
-                                                                        .spaceBetween,
-                                                                children: [
-                                                                  CircleAvatar(
-                                                                    radius: 15,
-                                                                    backgroundColor:
-                                                                        Colors.indigo[
-                                                                            50],
-                                                                    child: Text(
-                                                                      "$quantity",
-                                                                      style: TextStyle(
-                                                                          color: Colors
-                                                                              .green,
-                                                                          fontWeight:
-                                                                              FontWeight.bold),
-                                                                    ),
-                                                                  ),
-                                                                  Container(
-                                                                    child: SizedBox(
-                                                                        height:
-                                                                            10),
-                                                                  ),
-                                                                  SizedBox(
-                                                                      height:
-                                                                          5),
-                                                                  Container(
-                                                                      padding:
-                                                                          EdgeInsets.all(
-                                                                              2),
-                                                                      child:
-                                                                          InkWell(
-                                                                        onTap:
-                                                                            () {
-                                                                          Share.share(billURL ??
-                                                                              "");
-                                                                        },
-                                                                        child: Icon(
-                                                                            CupertinoIcons.share),
-                                                                      )),
-                                                                  SizedBox(
-                                                                      height:
-                                                                          5),
-                                                                  Container(
+                                                                    height: 5),
+                                                                Container(
                                                                     padding:
                                                                         EdgeInsets
-                                                                            .all(2),
-                                                                    child: Icon(
-                                                                        CupertinoIcons
-                                                                            .book),
-                                                                  ),
-                                                                ],
-                                                              ),
-                                                            )
-                                                          ],
-                                                        ),
-                                                      )
-                                                    ],
-                                                  ),
-                                                ],
-                                              ),
+                                                                            .all(
+                                                                                2),
+                                                                    child:
+                                                                        InkWell(
+                                                                      onTap:
+                                                                          () {
+                                                                        Share.share(
+                                                                            billURL);
+                                                                      },
+                                                                      child: Icon(
+                                                                          CupertinoIcons
+                                                                              .share),
+                                                                    )),
+                                                                SizedBox(
+                                                                    height: 5),
+                                                                Container(
+                                                                  padding:
+                                                                      EdgeInsets
+                                                                          .all(
+                                                                              2),
+                                                                  child: Icon(
+                                                                      CupertinoIcons
+                                                                          .book),
+                                                                ),
+                                                              ],
+                                                            ),
+                                                          )
+                                                        ],
+                                                      ),
+                                                    )
+                                                  ],
+                                                ),
+                                              ],
                                             ),
                                           ),
-                                        );
-                                      },
-                                    ),
+                                        ),
+                                      );
+                                    },
                                   ),
                                 ),
-                              ],
-                            ),
+                              ),
+                            ],
                           ),
                         ),
-                      );
-                    }),
+                      ),
+                    );
+                  },
+                ),
               ),
       ),
     );
   }
 
   void _pickDateDialog() {
-    print("Calling");
+    // print("Calling");
     showDatePicker(
             context: context,
             initialDate: DateTime.now(),
@@ -498,8 +492,8 @@ class _AllSalesState extends State<AllSales> {
         date = revGetBillDate(pickedDate);
         displayDate = getSelectedDisplayDate(pickedDate);
 
-        print(pickedDate);
-        print(displayDate);
+        // print(pickedDate);
+        // print(displayDate);
         _selectedDate = pickedDate;
         isLoading = true;
       });

@@ -177,7 +177,6 @@ class Fire {
           "product_price": price.toString().trim(),
           "product_quantity": quantity.toString().trim(),
           "_isDeleted": isDeleted,
-
           "_last_updated": FieldValue.arrayUnion([
             {
               'updated_by': manager,

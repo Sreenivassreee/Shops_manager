@@ -69,7 +69,7 @@ class _TodaySalesState extends State<TodaySales> {
 
       // print(salesProductData);
     } catch (e) {
-      // print(e);
+      print(e);
       show(context, "Error");
     }
   }
@@ -78,7 +78,7 @@ class _TodaySalesState extends State<TodaySales> {
     for (var i = 0; i < salesProductData.length; i++) {
       for (var j = 0; j < salesProductData[i].length; j++) {
         var tempPrice = salesProductData[i][j]['buy_products']
-            ['now_internal_selling_price'];
+            ['now_internal_selling_price_total'];
         totalInternalBillingPriceToday =
             totalInternalBillingPriceToday + int.parse(tempPrice);
       }
@@ -111,6 +111,7 @@ class _TodaySalesState extends State<TodaySales> {
                           .toUpperCase();
                       var mobile = salesProductData[mi][0]['customer_details']
                               ['mobile']
+                          .toString()
                           .toUpperCase();
                       return Padding(
                         padding: const EdgeInsets.symmetric(
@@ -167,53 +168,47 @@ class _TodaySalesState extends State<TodaySales> {
                                       itemCount: innerCount,
                                       itemBuilder: (context, i) {
                                         var brand = salesProductData[mi][i]
-                                                        ['buy_products']
-                                                    ['now_brand']
-                                                .toUpperCase() ??
-                                            "None";
+                                                ['buy_products']['now_brand']
+                                            .toString()
+                                            .toUpperCase();
                                         var model = salesProductData[mi][i]
-                                                        ['buy_products']
-                                                    ['now_model']
-                                                .toUpperCase() ??
-                                            "None";
+                                                ['buy_products']['now_model']
+                                            .toString()
+                                            .toUpperCase();
                                         var ram = salesProductData[mi][i]
-                                                    ['buy_products']['now_ram']
-                                                .toUpperCase() ??
-                                            "None";
+                                                ['buy_products']['now_ram']
+                                            .toString()
+                                            .toUpperCase();
                                         var storage = salesProductData[mi][i]
-                                                        ['buy_products']
-                                                    ['now_storage']
-                                                .toUpperCase() ??
-                                            "None";
+                                                ['buy_products']['now_storage']
+                                            .toString()
+                                            .toUpperCase();
                                         var id = salesProductData[mi][i]
                                             ['buy_products']['now__id'];
                                         var mrp = salesProductData[mi][i]
-                                                        ['buy_products']
-                                                    ['now_mrp_selling_price']
-                                                .toUpperCase() ??
-                                            "None";
-
+                                                    ['buy_products'][
+                                                'now_mrp_selling_price_per_piece']
+                                            .toString()
+                                            .toUpperCase();
                                         var internalPricing = salesProductData[
-                                                        mi][i]['buy_products'][
-                                                    'now_internal_selling_price']
-                                                .toUpperCase() ??
-                                            "None";
+                                                    mi][i]['buy_products'][
+                                                'now_internal_selling_price_per_piece']
+                                            .toString()
+                                            .toUpperCase();
                                         var billURL = salesProductData[mi][i]
-                                                        ['buy_products']
-                                                    ['now_bill_url']
-                                                .toUpperCase() ??
-                                            "None";
+                                                ['buy_products']['now_bill_url']
+                                            .toString()
+                                            .toUpperCase();
 
                                         var quantity = salesProductData[mi][i]
-                                                        ['buy_products']
-                                                    ['now_quantity']
-                                                .toUpperCase() ??
-                                            "None";
+                                                ['buy_products']['now_quantity']
+                                            .toString()
+                                            .toUpperCase();
                                         var time = salesProductData[mi][i]
                                             ['buy_products']['now_time_stamp'];
                                         var timeStamp =
                                             getTimeStamp(time: time);
-
+                                        var displaytime = timeStamp.split(", ");
                                         return Padding(
                                           padding: const EdgeInsets.symmetric(
                                             horizontal: 5,
@@ -322,7 +317,12 @@ class _TodaySalesState extends State<TodaySales> {
                                                                 SizedBox(
                                                                   height: 20,
                                                                 ),
-                                                                Text(timeStamp),
+                                                                Text(
+                                                                    displaytime[
+                                                                        0]),
+                                                                Text(
+                                                                    displaytime[
+                                                                        1]),
                                                               ],
                                                             ),
                                                             Container(
@@ -379,8 +379,8 @@ class _TodaySalesState extends State<TodaySales> {
                                                                           InkWell(
                                                                         onTap:
                                                                             () {
-                                                                          Share.share(billURL ??
-                                                                              "");
+                                                                          Share.share(
+                                                                              billURL);
                                                                         },
                                                                         child: Icon(
                                                                             CupertinoIcons.share),
