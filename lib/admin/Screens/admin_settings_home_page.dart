@@ -1,6 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:shops_manager/export.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:shops_manager/shop/shared-pref/shop-shared-pref.dart';
+import 'package:shops_manager/widgets/global/cuperLoading.dart';
 
 class AdminSettingsHomePage extends StatelessWidget {
   const AdminSettingsHomePage({Key? key}) : super(key: key);
@@ -15,7 +18,8 @@ class AdminSettingsHomePage extends StatelessWidget {
             children: [
               SettingTile(
                   context: context,
-                  title: "Settings",
+                  title: "Add Shop",
+                  
                   action: () {
                     Navigator.push(
                       context,
@@ -24,15 +28,17 @@ class AdminSettingsHomePage extends StatelessWidget {
                       ),
                     );
                   }),
-              Card(
-                child: Text("Add Shops2"),
-              ),
-              Card(
-                child: Text("Add Shops"),
-              ),
-              Card(
-                child: Text("Add Shops2"),
-              ),
+                  Spacer(),
+                   SettingTile(
+                  context: context,
+                  title: "Signout",
+                  icon:false,
+                  action: () {
+                    logout();
+          Navigator.pushAndRemoveUntil(context,
+              MaterialPageRoute(builder: (_) => LoginPage()), (route) => false);
+                  }),
+             
             ],
           ),
         ),
@@ -40,7 +46,7 @@ class AdminSettingsHomePage extends StatelessWidget {
     );
   }
 
-  Widget SettingTile({context, title, action}) {
+  Widget SettingTile({context, title, action,icon=true}) {
     return InkWell(
       onTap: action,
       child: Container(
@@ -56,7 +62,7 @@ class AdminSettingsHomePage extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(title),
-                  Icon(CupertinoIcons.right_chevron),
+                 icon==true? Icon(CupertinoIcons.right_chevron):SizedBox(),
                 ],
               ),
             ),

@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:shops_manager/export.dart';
 import 'package:shops_manager/shop/shared-pref/shop-shared-pref.dart';
 import 'package:shops_manager/widgets/global/cuperLoading.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 class AdminProductsHomeScreen extends StatefulWidget {
   const AdminProductsHomeScreen({Key? key}) : super(key: key);
@@ -17,19 +18,12 @@ class _AdminProductsHomeScreenState extends State<AdminProductsHomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          logout();
-          Navigator.pushAndRemoveUntil(context,
-              MaterialPageRoute(builder: (_) => LoginPage()), (route) => false);
-        },
-        child: Icon(Icons.logout),
-      ),
+      
       appBar: AppBar(
         automaticallyImplyLeading: false,
         elevation: 0,
         title: TitleText(
-          title: "SHOPS",
+          title: "PRODUCTS",
         ),
         // actions: [
         //   Container(
@@ -110,36 +104,42 @@ class _AdminProductsHomeScreenState extends State<AdminProductsHomeScreen> {
                   child: Card(
                     elevation: 0,
                     child: Padding(
-                      padding: const EdgeInsets.all(15.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                             padding: const EdgeInsets.symmetric(
+                          horizontal: 30, vertical: 10.0),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text(
+                          Column(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+ Text(
                             shopName ?? " ",
                             style: TextStyle(fontSize: 25, color: Colors.green),
+                          ), 
+                          SizedBox(height:10),
+                          Text(
+                            managerName ?? " ",
+                            
                           ),
-                          SizedBox(
-                            height: 10,
+                            ]
                           ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                managerName != null
-                                    ? "Shop Manager :   " + managerName!
-                                    : "",
-                                style: TextStyle(
-                                  fontSize: 15,
-                                ),
-                              ),
-                              Text(
-                                productCount,
-                                style: TextStyle(
-                                  fontSize: 20,
-                                ),
-                              )
-                            ],
-                          ),
+                         
+                           Container(
+                             
+                                    height: 70,
+                                    width: 70,
+                                    child: CachedNetworkImage(
+                                      imageUrl: "https://firebasestorage.googleapis.com/v0/b/shop-manger.appspot.com/o/Assets%2Fproducts.jpg?alt=media&token=915b64a0-a5f6-4d22-8b7d-e81150e541e7" ,
+                                      progressIndicatorBuilder:
+                                          (context, url, downloadProgress) =>
+                                              SizedBox(),
+                                      errorWidget: (context, url, error) =>
+                                          SizedBox.shrink(),
+                                    ),
+                                  ),
+                        
                         ],
                       ),
                     ),

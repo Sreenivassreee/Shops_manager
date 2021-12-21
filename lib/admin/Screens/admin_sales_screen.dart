@@ -5,6 +5,7 @@ import 'package:shops_manager/admin/Screens/all_sales.dart';
 import 'package:shops_manager/export.dart';
 import 'package:shops_manager/shop/shared-pref/shop-shared-pref.dart';
 import 'package:shops_manager/widgets/global/cuperLoading.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 class AdminSalesScreen extends StatefulWidget {
   const AdminSalesScreen({Key? key}) : super(key: key);
@@ -19,14 +20,7 @@ class _AdminSalesScreenState extends State<AdminSalesScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          logout();
-          Navigator.pushAndRemoveUntil(context,
-              MaterialPageRoute(builder: (_) => LoginPage()), (route) => false);
-        },
-        child: Icon(Icons.logout),
-      ),
+      
       appBar: AppBar(
         automaticallyImplyLeading: false,
         elevation: 0,
@@ -110,43 +104,44 @@ class _AdminSalesScreenState extends State<AdminSalesScreen> {
                 child: Container(
                   padding: EdgeInsets.symmetric(vertical: 0, horizontal: 5),
                   child: Card(
-                    shape: RoundedRectangleBorder(
-                      side: BorderSide(color: Colors.white70, width: 1),
-                      borderRadius: BorderRadius.circular(10),
-                    ),
                     elevation: 0,
                     child: Padding(
                       padding: const EdgeInsets.symmetric(
-                          horizontal: 10, vertical: 15.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                          horizontal: 30, vertical: 10.0),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text(
+                          Column(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+ Text(
                             shopName ?? " ",
                             style: TextStyle(fontSize: 25, color: Colors.green),
+                          ), 
+                          SizedBox(height:10),
+                          Text(
+                            managerName ?? " ",
+                            
                           ),
-                          SizedBox(
-                            height: 10,
+                            ]
                           ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                managerName != null
-                                    ? "Shop Manager :   " + managerName!
-                                    : "",
-                                style: TextStyle(
-                                  fontSize: 15,
-                                ),
-                              ),
-                              // Text(
-                              //   productCount,
-                              //   style: TextStyle(
-                              //     fontSize: 20,
-                              //   ),
-                              // )
-                            ],
-                          ),
+                         
+                           Container(
+                             
+                                    height: 70,
+                                    width: 70,
+                                    child: CachedNetworkImage(
+                                      imageUrl: "https://firebasestorage.googleapis.com/v0/b/shop-manger.appspot.com/o/Assets%2Fsales.jpg?alt=media&token=fee06879-6a88-4d36-9dc4-52b9f1e6e63a" ,
+                                      progressIndicatorBuilder:
+                                          (context, url, downloadProgress) =>
+                                              SizedBox(),
+                                      errorWidget: (context, url, error) =>
+                                          SizedBox.shrink(),
+                                    ),
+                                  ),
+                        
                         ],
                       ),
                     ),
